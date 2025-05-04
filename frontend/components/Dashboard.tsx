@@ -20,6 +20,8 @@ import { EvervaultCard, Icon } from './ui/evervault-card';
 import { useQuery } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
 import { getPlatoCoinBalance } from '@/services/platoCoin';
+import { useBadges } from '@/lib/badgeContext';
+import axios from 'axios';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatEther } from 'viem';
 import { toast } from "sonner";
@@ -33,26 +35,6 @@ interface Badge {
   color: string;
 }
 
-const mockBadges: Badge[] = [
-  {
-    name: 'Onchain Activity',
-    points: 100,
-    icon: <Activity className='w-12 h-12 text-purple-500' />,
-    color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
-  },
-  {
-    name: 'Developer',
-    points: 200,
-    icon: <Code2 className='w-12 h-12 text-purple-500' />,
-    color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
-  },
-  {
-    name: 'Learning',
-    points: 150,
-    icon: <GraduationCap className='w-12 h-12 text-purple-500' />,
-    color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
-  },
-];
 
 const SEASON_START_DATE = new Date('2024-01-01T00:00:00');
 const SEASON_END_DATE = new Date('2025-12-31T23:59:59');
@@ -66,13 +48,32 @@ export function Dashboard() {
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [showPlatoCoinsEffect, setShowPlatoCoinsEffect] = useState(false);
   const [claimedBadges, setClaimedBadges] = useState<string[]>([]);
+
   const { address } = useAccount();
+
+
+  // Get badge data from context
+  const { 
+    onchainScore, 
+    developerScore, 
+    learningScore, 
+    isLoading: isBadgesLoading,
+    error: badgesError,
+    fetchBadges
+  } = useBadges();
 
   const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } =
     useQuery({
       queryKey: ['platoCoinBalance', address],
       queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
     });
+
+  // Fetch badge data on mount - only once when address is available
+  useEffect(() => {
+    if (address && !onchainScore && !developerScore && !learningScore) {
+      fetchBadges(address);
+    }
+  }, [address, fetchBadges, onchainScore, developerScore, learningScore]);
 
   useEffect(() => {
     let hoverTimeout: NodeJS.Timeout;
@@ -123,13 +124,42 @@ export function Dashboard() {
     };
   }, []);
 
-  const totalPoints = mockBadges.reduce((sum, badge) => sum + badge.points, 0);
+  const totalPoints = onchainScore + developerScore + learningScore;
   const totalPlatoCoins = totalPoints * 10;
 
-  const handleClaim = (badge: Badge) => {
-    setSelectedBadge(badge);
-    // Add badge to claimed badges
-    setClaimedBadges(prev => [...prev, badge.name]);
+  const handleClaim = async (badge: Badge) => {
+    try {
+      // Determine category from badge name
+      let category: 'onchain' | 'developer' | 'learning';
+      
+      if (badge.name === 'Onchain Activity') {
+        category = 'onchain';
+      } else if (badge.name === 'Developer') {
+        category = 'developer';
+      } else if (badge.name === 'Learning') {
+        category = 'learning';
+      } else {
+        throw new Error(`Unknown badge type: ${badge.name}`);
+      }
+      
+      // Call the claim API directly
+      const result = await axios.post('/api/talent/badges', {
+        category,
+        userId: address
+      });
+      
+      // Show success message
+      toast.success(`Claimed ${result.data.data.rewardType}: ${result.data.data.currentWithdrawAmount}`);
+      
+      // Set the selected badge for animation
+      setSelectedBadge(badge);
+      
+      // Add badge to claimed badges
+      setClaimedBadges(prev => [...prev, badge.name]);
+    } catch (error) {
+      console.error('Error claiming badge:', error);
+      toast.error('Failed to claim badge. Please try again.');
+    }
   };
 
   const handleCloseReveal = () => {
@@ -197,7 +227,26 @@ export function Dashboard() {
               </CardHeader>
               <CardContent className='p-6'>
                 <div className='flex flex-col md:flex-row gap-8 justify-center items-center'>
-                  {mockBadges.map((badge, index) => (
+                  {[
+                    {
+                      name: 'Onchain Activity',
+                      points: onchainScore,
+                      icon: <Activity className='w-12 h-12 text-purple-500' />,
+                      color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
+                    },
+                    {
+                      name: 'Developer',
+                      points: developerScore,
+                      icon: <Code2 className='w-12 h-12 text-purple-500' />,
+                      color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
+                    },
+                    {
+                      name: 'Learning',
+                      points: learningScore,
+                      icon: <GraduationCap className='w-12 h-12 text-purple-500' />,
+                      color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
+                    },
+                  ].map((badge, index) => (
                     <motion.div
                       key={badge.name}
                       initial={{ opacity: 0, y: 30 }}
@@ -218,6 +267,9 @@ export function Dashboard() {
                               <span className='text-base text-purple-500 font-semibold'>
                                 {badge.points} points
                               </span>
+                              {isBadgesLoading && (
+                                <span className='text-xs text-gray-400 mt-1'>Loading...</span>
+                              )}
                             </div>
                           </EvervaultCard>
                         </div>
@@ -228,12 +280,17 @@ export function Dashboard() {
                         </p>
                         <Button
                           className={`w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 border-0 ${
-                            claimedBadges.includes(badge.name) ? 'opacity-50 cursor-not-allowed' : ''
+                            claimedBadges.includes(badge.name) ? 'opacity-50 cursor-not-allowed' : 
+                            isBadgesLoading ? 'opacity-70 cursor-wait' : ''
                           }`}
                           onClick={() => handleClaim(badge)}
-                          disabled={claimedBadges.includes(badge.name)}
+                          disabled={
+                            claimedBadges.includes(badge.name) || 
+                            isBadgesLoading
+                          }
                         >
-                          {claimedBadges.includes(badge.name) ? 'Claimed' : 'Claim Badge'}
+                          {claimedBadges.includes(badge.name) ? 'Claimed' : 
+                           isBadgesLoading ? 'Loading...' : 'Claim Badge'}
                         </Button>
                       </div>
                     </motion.div>
