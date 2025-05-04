@@ -15,12 +15,12 @@ contract StakingPoolScript is Script {
     ASTRMock public _ASTRMock;
 
     function run() public {
+        vm.startBroadcast();
         platoCoin = new PlatoCoin();
         _ASTRMock = new ASTRMock();
 
         address minter = msg.sender;
 
-        vm.startBroadcast();
         stakingPool = new StakingPool(
             address(0xB51B97050CeA88C20a93E1d72de8a314e47bAEC5),
             address(0x2CAE934a1e84F693fbb78CA5ED3B0A6893259441),
