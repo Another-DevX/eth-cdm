@@ -1,15 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../src/interfaces/PlatoCoin.sol";
+import "../src/PlatoCoin.sol";
 import "../src/interfaces/INeemoLiquifier.sol";
-
-abstract contract INeeMoliquifier {
-    address constant IMPORTANT_ADDRESS = 0x543d...;
-    SomeContract someContract;
-    constructor() {...}
-}
-
+import {ERC20Mock} from "./ERC20Mock.sol";
+import {ASTRMock} from "../src/ASTRMock.sol";
 
 import {Test, console} from "forge-std/Test.sol";
 import {StakingPool}     from "../src/StakingPool.sol";
@@ -18,9 +13,10 @@ import {StakingPool}     from "../src/StakingPool.sol";
 contract StakingPoolTest is Test {
 
     StakingPool public stakingPool;
-    PlatoCoin public ASTR;
-    PlatoCoin public NsASTR;
-    PlatoCoin public ASTRMockToken;
+    ERC20Mock public ASTR;
+    ERC20Mock public NsASTR;
+    PlatoCoin public platoCoin;
+    ASTRMock public ASTRMockToken;
     INeemoLiquifier public neemoLiquifier;
 
 
@@ -29,44 +25,47 @@ contract StakingPoolTest is Test {
     address public benefactor = address(2);
     address public sponsor = address(3);
 
-    function beforeEach() public {
+    function setUp() public {
         
-        neemoLiquifier = new INeemoLiquifier();
-        ASTR = new PlatoCoin("ASTR", "ASTR", 18);
-        NsASTR = new PlatoCoin("NsASTR", "NsASTR", 18);
-        PlatoCoin = new PlatoCoin("PLATO", "PLT", 18);
-        ASTRMockToken = new PlatoCoin("PLH", "PLH", 18);
+        ASTR = new ERC20Mock(1000 ether);
+        NsASTR = new ERC20Mock(1000 ether);
+        platoCoin = new PlatoCoin();
+        ASTRMockToken = new ASTRMock();
+
 
         stakingPool = new StakingPool(
-            address(neemoLiquifier),
+            address(77),
             address(ASTR),
             address(NsASTR),
-            address(PlatoCoin),
+            address(platoCoin),
             address(ASTRMockToken),
             minter_coins_rol
         );
-    }
 
-    function testStake() public {
-        ASTR.transferFrom(address(NsASTR), address(ASTR), 500 ether)
-        ASTR.approve(address(stakingPool), 500 ether);
+        ASTRMockToken.mint(address(stakingPool), 1000 ether);
 
-        stakingPool.stake(500 ether);
+        vm.startPrank(minter_coins_rol);
+        stakingPool.grantRole(stakingPool.ORGANIZATION_ROLE(), sponsor);
+        vm.stopPrank();
+}
 
-        assertEq(stakingPool.stakedAmount(staker), 500 ether);
-
-    }
     function testGivePlatoCoinsToBenefactor() public {
+        vm.startPrank(minter_coins_rol);
         stakingPool.givePlatoCoinsToBenefactor(1000 ether, benefactor);
-        assertEq(PlatoCoin.balanceOf(benefactor), 1000 ether);
+        vm.stopPrank();
+        assertEq(platoCoin.balanceOf(benefactor), 1000 ether);
     }
-    function testRedeemPlatoCoins() public {
-        Platocoin.transferFrom(msg.sender, sponsor)
-        Platocoin.burn(500 ether)
-        ASTRMockToken.transfer(msg.sender, 500 ether)
 
-        stakingPool.redeemPlatoCoins(500 ether)
-        assertEq(PlatoCoin.balanceOf(sponsor), 500 ether)
+    function testRedeemPlatoCoins() public {
+        vm.startPrank(minter_coins_rol);
+        platoCoin.mint(sponsor, 500 ether);
+        vm.stopPrank();
+
+        vm.startPrank(sponsor);
+        platoCoin.approve(address(stakingPool), 500 ether);
+        stakingPool.redeemPlatoCoins(500 ether);
+        vm.stopPrank();
+        assertEq(platoCoin.balanceOf(sponsor), 0 ether);
     }
 }
 

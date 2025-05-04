@@ -28,6 +28,7 @@ contract StakingPool is AccessControl {
         platoCoin = PlatoCoin(_platoCoin);
         ASTRMockToken = ASTRMock(_apyaspr);
         _grantRole(MINT_COINS_ROLE, minter);
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function stake(uint256 amount) public {

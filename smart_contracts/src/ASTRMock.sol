@@ -6,4 +6,8 @@ contract ASTRMock is ERC20 {
     constructor() ERC20("ASTRMockToken", "ASTRM"){
     }
 
+    function mint(address to, uint256 amount) public {
+        _mint(to, amount);
+    }
+
 }
