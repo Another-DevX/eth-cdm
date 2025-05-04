@@ -10,7 +10,16 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-export const networks = [soneium]
+export const soneium_scs = {
+  ...soneium,
+  rpcUrls: {
+    default: {
+      http: ['https://soneium.rpc.scs.startale.com?apikey=TOsbOdqgCfLjFqxm6AUdpsRqo660y2Sv']
+    }
+  }
+}
+
+export const networks = [soneium_scs]
 
 //Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
