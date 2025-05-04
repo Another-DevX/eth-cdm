@@ -1,3 +1,8 @@
 venv
 .aider.conf.yml
 .aider*
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
