@@ -4,7 +4,6 @@ import {
   Navbar as ResizableNavbar,
   NavBody,
   MobileNav,
-  NavbarButton,
   MobileNavHeader,
   MobileNavToggle,
   MobileNavMenu,
