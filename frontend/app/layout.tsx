@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 import { headers } from 'next/headers' // added
 import ContextProvider from '@/context'
+import { Navbar } from '@/components/Navbar'
 
 export const metadata: Metadata = {
   title: 'Platonautas',

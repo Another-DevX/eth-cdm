@@ -58,7 +58,6 @@ export function Dashboard() {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [progress, setProgress] = useState<number>(0);
   const [canClaim, setCanClaim] = useState(false);
-  const { theme, toggleTheme } = useTheme();
   const { address } = useAccount();
 
   const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } = useQuery({
