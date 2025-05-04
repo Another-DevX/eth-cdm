@@ -1,0 +1,6 @@
+- add user data nav: pic, name, 
+- remove light mode btn
+- remove claim btn form badges
+- add collapsibles for sections
+- set season and rewords as widgets of a sub nav
+- fix splash screen wrod err

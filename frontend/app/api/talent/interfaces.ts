@@ -1,29 +1,26 @@
 // User badge interface
 export interface Badge {
-  id: number;
-  name: string;
-  description: string;
-  points: number;
-  dateEarned: string;
-  imageUrl: string;
+  badgeName: string;
+  badgeSlug: string;
+  score: number;
+  maxScore: number;
 }
 
 // User data interface
 export interface UserData {
   userId: string;
-  username: string;
-  joinDate: string;
-  totalPoints: number;
-  level: number;
+  userName: string;
+  image: string | null;
 }
 
 // Response interfaces
 export interface BadgesResponse {
-  success: boolean;
   badges: Badge[];
+  onchainActivity: number;
+  developer: number;
+  learning: number;
 }
 
 export interface UserResponse {
-  success: boolean;
   user: UserData;
 }
