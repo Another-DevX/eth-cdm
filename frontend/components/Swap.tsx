@@ -7,10 +7,17 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowDown, AlertCircle, Coins, ArrowRightLeft, TrendingUp, Sparkles, Zap, Rocket } from "lucide-react";
 import Image from "next/image";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAccount, useWalletClient } from "wagmi";
+import { redeemPlatoCoins } from "@/services/stakingPool";
+import { toast } from "sonner";
+import { getPlatoCoinBalance, approvePlatoCoin } from "@/services/platoCoin";
+import { formatEther } from "viem";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Datos mockeados
 const MOCK_EXCHANGE_RATE = 1; // 1 PlatoToken = 1 ASTR
-const MOCK_USER_BALANCE = 100; // 100 PlatoToken
 
 const floatingElements = [
   { icon: <Sparkles className="w-4 h-4 text-purple-500" />, delay: 0 },
@@ -23,6 +30,65 @@ export function Swap() {
   const [astrAmount, setAstrAmount] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+  const { address } = useAccount();
+  const { data: walletClient } = useWalletClient();
+
+  const { data: platoCoinBalance, isLoading: isLoadingBalance } = useQuery({
+    queryKey: ['platoCoinBalance', address],
+    queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
+    enabled: !!address,
+  });
+
+  const { mutate: approve, isPending: isApproving } = useMutation({
+    mutationFn: async () => {
+      if (!walletClient || !address) {
+        throw new Error("Wallet not connected");
+      }
+
+      if (!platoAmount || isNaN(Number(platoAmount))) {
+        throw new Error("Invalid amount");
+      }
+
+      const amountBigInt = BigInt(Math.floor(Number(platoAmount) * 1e18));
+      return await approvePlatoCoin(amountBigInt, address, walletClient);
+    },
+    onSuccess: () => {
+      toast("Approval successful");
+      setShowApprovalModal(false);
+      setShowRedeemModal(true);
+    },
+    onError: (error) => {
+      toast.error("Approval failed");
+      console.error("Error approving:", error);
+    },
+  });
+
+  const { mutate: redeem, isPending: isRedeeming } = useMutation({
+    mutationFn: async () => {
+      if (!walletClient || !address) {
+        throw new Error("Wallet not connected");
+      }
+
+      if (!platoAmount || isNaN(Number(platoAmount))) {
+        throw new Error("Invalid amount");
+      }
+
+      const amountBigInt = BigInt(Math.floor(Number(platoAmount) * 1e18));
+      return await redeemPlatoCoins(amountBigInt, address, walletClient);
+    },
+    onSuccess: () => {
+      toast("Successfully redeemed PlatoCoins");
+      setPlatoAmount("");
+      setAstrAmount("");
+      setShowRedeemModal(false);
+    },
+    onError: (error) => {
+      toast.error("Failed to redeem PlatoCoins");
+      console.error("Error redeeming:", error);
+    },
+  });
 
   const handlePlatoChange = (value: string) => {
     setPlatoAmount(value);
@@ -30,12 +96,12 @@ export function Swap() {
       const amount = parseFloat(value);
       if (isNaN(amount)) {
         setAstrAmount("");
-        setError("Por favor ingresa un número válido");
+        setError("Please enter a valid number");
         return;
       }
       setAstrAmount((amount * MOCK_EXCHANGE_RATE).toFixed(2));
-      if (amount > MOCK_USER_BALANCE) {
-        setError("Balance insuficiente");
+      if (platoCoinBalance && BigInt(Math.floor(amount * 1e18)) > platoCoinBalance) {
+        setError("Insufficient balance");
       } else {
         setError("");
       }
@@ -46,8 +112,7 @@ export function Swap() {
   };
 
   const handleSwap = () => {
-    // Simular el swap
-    alert(`Intercambiando ${platoAmount} PlatoToken por ${astrAmount} ASTR`);
+    setShowApprovalModal(true);
   };
 
   return (
@@ -105,7 +170,13 @@ export function Swap() {
                 </div>
                 <div className="flex items-center space-x-1 text-sm text-purple-300">
                   <Coins className="w-4 h-4" />
-                  <span>Balance: {MOCK_USER_BALANCE} PT</span>
+                  <span>
+                    {isLoadingBalance ? (
+                      <Skeleton className="h-4 w-16 bg-purple-500/20" />
+                    ) : (
+                      `Balance: ${formatEther(platoCoinBalance || BigInt(0))} PT`
+                    )}
+                  </span>
                 </div>
               </div>
             </CardHeader>
@@ -118,17 +189,32 @@ export function Swap() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <label className="text-sm text-purple-300">From</label>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      value={platoAmount}
-                      onChange={(e) => handlePlatoChange(e.target.value)}
-                      placeholder="0.0"
-                      className="border-purple-500/30 focus:border-purple-500/50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-500 font-medium">
-                      PT
+                  <div className="flex space-x-2">
+                    <div className="relative flex-1">
+                      <Input
+                        type="number"
+                        value={platoAmount}
+                        onChange={(e) => handlePlatoChange(e.target.value)}
+                        placeholder="0.0"
+                        className="border-purple-500/30 focus:border-purple-500/50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-500 font-medium">
+                        PT
+                      </div>
                     </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="text-purple-500 border-purple-500/30 hover:bg-purple-500/10 cursor-pointer"
+                      onClick={() => {
+                        if (platoCoinBalance) {
+                          setPlatoAmount(formatEther(platoCoinBalance));
+                          setAstrAmount(formatEther(platoCoinBalance));
+                        }
+                      }}
+                    >
+                      MAX
+                    </Button>
                   </div>
                 </motion.div>
 
@@ -223,8 +309,8 @@ export function Swap() {
                 >
                   <Button
                     onClick={handleSwap}
-                    disabled={!platoAmount || !!error}
-                    className="w-full bg-purple-500/90 hover:bg-purple-500 border border-purple-400/50 transition-all duration-300 relative overflow-hidden group"
+                    disabled={!platoAmount || !!error || !address || isRedeeming}
+                    className="w-full bg-purple-500/90 hover:bg-purple-500 border border-purple-400/50 transition-all duration-300 relative overflow-hidden group cursor-pointer"
                   >
                     <motion.span
                       initial={{ x: 0 }}
@@ -232,7 +318,7 @@ export function Swap() {
                       transition={{ duration: 2, repeat: Infinity }}
                       className="relative z-10"
                     >
-                      Swap
+                      {isRedeeming ? "Redeeming..." : "Redeem PlatoCoins"}
                     </motion.span>
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20"
@@ -247,6 +333,62 @@ export function Swap() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Approval Modal */}
+      <Dialog open={showApprovalModal} onOpenChange={setShowApprovalModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve PlatoCoins</DialogTitle>
+            <DialogDescription>
+              You need to approve the contract to redeem your PlatoCoins.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowApprovalModal(false)}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => approve()}
+              disabled={isApproving}
+              className="cursor-pointer"
+            >
+              {isApproving ? "Approving..." : "Approve"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Redeem Modal */}
+      <Dialog open={showRedeemModal} onOpenChange={setShowRedeemModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Redeem</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to redeem {platoAmount} PlatoCoins for {astrAmount} ASTR?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowRedeemModal(false)}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => redeem()}
+              disabled={isRedeeming}
+              className="cursor-pointer"
+            >
+              {isRedeeming ? "Redeeming..." : "Confirm Redeem"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Elementos flotantes */}
       <AnimatePresence>
