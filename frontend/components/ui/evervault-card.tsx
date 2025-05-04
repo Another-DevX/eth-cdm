@@ -7,12 +7,16 @@ import { cn } from "@/lib/utils";
 export const EvervaultCard = ({
   className,
   children,
+  isHovered = false,
 }: {
   className?: string;
   children: React.ReactNode;
+  isHovered?: boolean;
 }) => {
   let mouseX = useMotionValue(0);
   let mouseY = useMotionValue(0);
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const [isMouseHovered, setIsMouseHovered] = useState(false);
 
   const [randomString, setRandomString] = useState("");
 
@@ -20,6 +24,18 @@ export const EvervaultCard = ({
     let str = generateRandomString(1500);
     setRandomString(str);
   }, []);
+
+  useEffect(() => {
+    if ((isHovered || isMouseHovered) && cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      mouseX.set(centerX);
+      mouseY.set(centerY);
+      const str = generateRandomString(1500);
+      setRandomString(str);
+    }
+  }, [isHovered, isMouseHovered]);
 
   function onMouseMove({ currentTarget, clientX, clientY }: any) {
     let { left, top } = currentTarget.getBoundingClientRect();
@@ -38,13 +54,20 @@ export const EvervaultCard = ({
       )}
     >
       <div
+        ref={cardRef}
         onMouseMove={onMouseMove}
-        className="group/card rounded-3xl w-full relative overflow-hidden bg-transparent flex items-center justify-center h-full"
+        onMouseEnter={() => setIsMouseHovered(true)}
+        onMouseLeave={() => setIsMouseHovered(false)}
+        className={cn(
+          "group/card rounded-3xl w-full relative overflow-hidden bg-transparent flex items-center justify-center h-full",
+          isHovered && "hover"
+        )}
       >
         <CardPattern
           mouseX={mouseX}
           mouseY={mouseY}
           randomString={randomString}
+          isHovered={isHovered || isMouseHovered}
         />
         <div className="relative z-10 flex items-center justify-center">
           <div className="relative h-44 w-44  rounded-full flex items-center justify-center text-white font-bold text-4xl">
@@ -57,19 +80,28 @@ export const EvervaultCard = ({
   );
 };
 
-export function CardPattern({ mouseX, mouseY, randomString }: any) {
+export function CardPattern({ mouseX, mouseY, randomString, isHovered }: any) {
   let maskImage = useMotionTemplate`radial-gradient(250px at ${mouseX}px ${mouseY}px, white, transparent)`;
   let style = { maskImage, WebkitMaskImage: maskImage };
 
   return (
     <div className="pointer-events-none">
-      <div className="absolute inset-0 rounded-3xl [mask-image:linear-gradient(white,transparent)] group-hover/card:opacity-50"></div>
+      <div className={cn(
+        "absolute inset-0 rounded-3xl [mask-image:linear-gradient(white,transparent)]",
+        isHovered ? "opacity-50" : "opacity-0"
+      )}></div>
       <motion.div
-        className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 opacity-0 group-hover/card:opacity-100 backdrop-blur-xl transition duration-500"
+        className={cn(
+          "absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 backdrop-blur-xl transition duration-500",
+          isHovered ? "opacity-100" : "opacity-0"
+        )}
         style={style}
       />
       <motion.div
-        className="absolute inset-0 rounded-3xl opacity-0 mix-blend-overlay group-hover/card:opacity-100"
+        className={cn(
+          "absolute inset-0 rounded-3xl mix-blend-overlay",
+          isHovered ? "opacity-100" : "opacity-0"
+        )}
         style={style}
       >
         <p className="absolute inset-x-0 text-xs h-full break-words whitespace-pre-wrap text-white font-mono font-bold transition duration-500">

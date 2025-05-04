@@ -22,6 +22,9 @@ import { useAccount } from 'wagmi';
 import { getPlatoCoinBalance } from '@/services/platoCoin';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatEther } from 'viem';
+import { toast } from "sonner";
+import { BadgeRevealEffect } from './BadgeRevealEffect';
+import { PlatoCoinsClaimEffect } from './PlatoCoinsClaimEffect';
 
 interface Badge {
   name: string;
@@ -58,14 +61,22 @@ export function Dashboard() {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [progress, setProgress] = useState<number>(0);
   const [canClaim, setCanClaim] = useState(false);
+  const [hoveredBadge, setHoveredBadge] = useState<string | null>(null);
+  const [temporaryHover, setTemporaryHover] = useState(false);
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [showPlatoCoinsEffect, setShowPlatoCoinsEffect] = useState(false);
+  const [claimedBadges, setClaimedBadges] = useState<string[]>([]);
   const { address } = useAccount();
 
-  const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } = useQuery({
-    queryKey: ['platoCoinBalance', address],
-    queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
-  });
+  const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } =
+    useQuery({
+      queryKey: ['platoCoinBalance', address],
+      queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
+    });
 
   useEffect(() => {
+    let hoverTimeout: NodeJS.Timeout;
+    let hoverTimeoutNullifier = false;
     const timer = setInterval(() => {
       const now = new Date();
       const totalDuration =
@@ -75,6 +86,18 @@ export function Dashboard() {
 
       const progressPercentage = Math.min(100, (elapsed / totalDuration) * 100);
       setProgress(progressPercentage);
+
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+
+      if (!hoverTimeoutNullifier) {
+        hoverTimeoutNullifier = true;
+        setTemporaryHover(true);
+        hoverTimeout = setTimeout(() => {
+          setTemporaryHover(false);
+        }, 200);
+      }
 
       if (remaining <= 0) {
         setTimeLeft('Season ended');
@@ -92,14 +115,33 @@ export function Dashboard() {
       setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+    };
   }, []);
 
   const totalPoints = mockBadges.reduce((sum, badge) => sum + badge.points, 0);
   const totalPlatoCoins = totalPoints * 10;
 
-  const handleClaim = () => {
-    alert(`You have claimed ${totalPlatoCoins} PlatoCoins!`);
+  const handleClaim = (badge: Badge) => {
+    setSelectedBadge(badge);
+    // Add badge to claimed badges
+    setClaimedBadges(prev => [...prev, badge.name]);
+  };
+
+  const handleCloseReveal = () => {
+    setSelectedBadge(null);
+  };
+
+  const handlePlatoCoinsClaim = () => {
+    setShowPlatoCoinsEffect(true);
+  };
+
+  const handleClosePlatoCoinsEffect = () => {
+    setShowPlatoCoinsEffect(false);
   };
 
   const formatDate = (date: Date) => {
@@ -109,6 +151,18 @@ export function Dashboard() {
       day: 'numeric',
     });
   };
+
+  const resetClaimedBadges = () => {
+    setClaimedBadges([]);
+  };
+
+  useEffect(() => {
+    toast(
+      <span>
+        Roadmap: <a href="/roadmap" className="text-purple-400 underline">Ver Roadmap</a>
+      </span>
+    );
+  }, []);
 
   return (
     <div className='min-h-screen p-8 bg-background'>
@@ -122,11 +176,23 @@ export function Dashboard() {
           >
             <Card className='border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] bg-background/80 backdrop-blur-sm hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] transition-all duration-300'>
               <CardHeader className='border-b border-purple-500/10'>
-                <div className='flex items-center space-x-2'>
-                  <Trophy className='w-6 h-6 text-purple-500' />
-                  <CardTitle className='text-foreground'>
-                    Your Achievements
-                  </CardTitle>
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center space-x-2'>
+                    <Trophy className='w-6 h-6 text-purple-500' />
+                    <CardTitle className='text-foreground'>
+                      Your Achievements
+                    </CardTitle>
+                  </div>
+                  {claimedBadges.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetClaimedBadges}
+                      className="text-purple-500 hover:text-purple-600"
+                    >
+                      Reset Badges
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className='p-6'>
@@ -139,17 +205,18 @@ export function Dashboard() {
                       transition={{ duration: 0.5, delay: index * 0.2 }}
                       className='relative flex flex-col items-center w-80 p-6 space-y-6 group'
                     >
-                      {/* Borde gradiente exterior */}
                       <div className='rounded-3xl p-1 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full flex-1'>
                         <div className='rounded-2xl bg-black w-full h-full flex items-center justify-center'>
-                          <EvervaultCard>
+                          <EvervaultCard
+                            isHovered={temporaryHover || claimedBadges.includes(badge.name)}
+                          >
                             <div className='flex flex-col items-center justify-center w-full'>
                               <div className='mb-2'>{badge.icon}</div>
                               <span className='text-lg font-bold text-black dark:text-white text-center'>
                                 {badge.name}
                               </span>
                               <span className='text-base text-purple-500 font-semibold'>
-                                {badge.points} puntos
+                                {badge.points} points
                               </span>
                             </div>
                           </EvervaultCard>
@@ -157,15 +224,16 @@ export function Dashboard() {
                       </div>
                       <div className='w-full flex flex-col items-center'>
                         <p className='text-sm text-gray-400 text-center mb-4'>
-                          ¡Reclama este badge por tu logro destacado!
+                          Claim this badge for your outstanding achievement!
                         </p>
                         <Button
-                          className='w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 border-0'
-                          onClick={() =>
-                            alert(`¡Has reclamado el badge: ${badge.name}!`)
-                          }
+                          className={`w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 border-0 ${
+                            claimedBadges.includes(badge.name) ? 'opacity-50 cursor-not-allowed' : ''
+                          }`}
+                          onClick={() => handleClaim(badge)}
+                          disabled={claimedBadges.includes(badge.name)}
                         >
-                          Reclamar Badge
+                          {claimedBadges.includes(badge.name) ? 'Claimed' : 'Claim Badge'}
                         </Button>
                       </div>
                     </motion.div>
@@ -243,11 +311,11 @@ export function Dashboard() {
                     <div className='flex items-center space-x-3'>
                       <Coins className='w-6 h-6 text-purple-500' />
                       <span className='font-medium text-foreground'>
-                        Total PlatoCoins
+                        Total claimable PlatoCoins
                       </span>
                     </div>
                     {isPlatoCoinBalanceLoading ? (
-                      <Skeleton className="h-8 w-24 bg-purple-500/20" />
+                      <Skeleton className='h-8 w-24 bg-purple-500/20' />
                     ) : (
                       <span className='text-2xl font-bold text-purple-500'>
                         {formatEther(platoCoinBalance || BigInt(0))}
@@ -255,27 +323,10 @@ export function Dashboard() {
                     )}
                   </div>
                   <Button
-                    onClick={handleClaim}
-                    disabled={!canClaim}
-                    className={`w-full transition-all duration-300 ${
-                      canClaim
-                        ? 'bg-purple-500/90 hover:bg-purple-500 border border-purple-400/50 hover:scale-[1.02]'
-                        : 'bg-gray-400/50 cursor-not-allowed'
-                    }`}
+                    onClick={handlePlatoCoinsClaim}
+                    className={`w-full transition-all duration-300 ${'bg-purple-500/90 hover:bg-purple-500 border border-purple-400/50 hover:scale-[1.02]'}`}
                   >
-                    <div className='flex items-center space-x-2'>
-                      {canClaim ? (
-                        <>
-                          <CheckCircle2 className='w-5 h-5' />
-                          <span>Claim Your PlatoCoins</span>
-                        </>
-                      ) : (
-                        <>
-                          <Clock className='w-5 h-5' />
-                          <span>Waiting for season end</span>
-                        </>
-                      )}
-                    </div>
+                    Claim Your PlatoCoins
                   </Button>
                 </div>
               </CardContent>
@@ -283,6 +334,23 @@ export function Dashboard() {
           </motion.div>
         </div>
       </div>
+
+      {selectedBadge && (
+        <BadgeRevealEffect
+          isOpen={!!selectedBadge}
+          onClose={handleCloseReveal}
+          badgeName={selectedBadge.name}
+          badgeIcon={selectedBadge.icon}
+        />
+      )}
+
+      {showPlatoCoinsEffect && (
+        <PlatoCoinsClaimEffect
+          isOpen={showPlatoCoinsEffect}
+          onClose={handleClosePlatoCoinsEffect}
+          amount={totalPlatoCoins}
+        />
+      )}
     </div>
   );
 }

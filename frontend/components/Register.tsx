@@ -7,6 +7,7 @@ import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Wallet2, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export function Register() {
   const { isVerified, setIsVerified, checkVerificationStatus } = useApp();
@@ -80,8 +81,8 @@ export function Register() {
                 >
                   <div className="flex items-center space-x-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${isConnected
-                        ? "bg-green-500 text-white"
-                        : "bg-purple-500/20 text-purple-500 border border-purple-500"
+                      ? "bg-green-500 text-white"
+                      : "bg-purple-500/20 text-purple-500 border border-purple-500"
                       }`}>
                       {isConnected ? (
                         <CheckCircle2 className="w-5 h-5" />
@@ -94,8 +95,8 @@ export function Register() {
                   <Button
                     onClick={handleConnectWallet}
                     className={`w-full transition-all duration-300 ${isConnected
-                        ? "bg-green-500 hover:bg-green-600"
-                        : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
                       }`}
                   >
                     {isConnected ? "Wallet Conectada" : "Conectar Wallet"}
@@ -109,8 +110,8 @@ export function Register() {
                 >
                   <div className="flex items-center space-x-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${isVerified
-                        ? "bg-green-500 text-white"
-                        : "bg-purple-500/20 text-purple-500 border border-purple-500"
+                      ? "bg-green-500 text-white"
+                      : "bg-purple-500/20 text-purple-500 border border-purple-500"
                       }`}>
                       {isVerified ? (
                         <CheckCircle2 className="w-5 h-5" />
@@ -124,8 +125,8 @@ export function Register() {
                     onClick={() => !isVerified && window.open('https://talentprotocol.com', '_blank')}
                     disabled={!isConnected || isVerified}
                     className={`w-full transition-all duration-300 ${isVerified
-                        ? "bg-green-500 hover:bg-green-600"
-                        : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
                       }`}
                   >
                     {isVerified ? "Verificado" : "Verificar en Talent Protocol"}
