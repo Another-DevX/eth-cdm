@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Coins, TrendingUp, PieChart, Info, Settings } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
 // Datos mockeados
 const MOCK_APR = 12.5;
@@ -41,6 +42,15 @@ const DEFAULT_YIELD_DISTRIBUTION = {
 };
 
 const MAX_USER_SHARE = 80;
+
+const formatChartData = (data: typeof MOCK_PERFORMANCE_DATA['1w']) => {
+  return data.map(item => ({
+    day: item.day,
+    totalApr: item.totalApr,
+    userApr: item.userApr,
+    publicApr: item.publicApr
+  }));
+};
 
 export function Liquidity() {
   const [amount, setAmount] = useState<string>("");
@@ -259,105 +269,89 @@ export function Liquidity() {
                     <span className="text-purple-500 font-bold">{MOCK_APR}%</span>
                   </div>
                   
-                  {/* Gráfica de rendimiento interactiva */}
-                  <div className="space-y-2">
-                    <span className="text-sm text-purple-300">Performance Over Time</span>
-                    <div className="h-40 relative">
-                      <svg className="w-full h-full">
-                        {MOCK_PERFORMANCE_DATA[selectedTimeframe].map((data, index, array) => {
-                          const x = (index / (array.length - 1)) * 100;
-                          const totalY = 100 - (data.totalApr / 50) * 100;
-                          const userY = 100 - (data.userApr / 50) * 100;
-                          const publicY = 100 - (data.publicApr / 50) * 100;
-                          
-                          return (
-                            <g key={index}>
-                              {index > 0 && (
-                                <>
-                                  <line
-                                    x1={`${(index - 1) / (array.length - 1) * 100}%`}
-                                    y1={`${100 - (array[index - 1].totalApr / 50) * 100}%`}
-                                    x2={`${x}%`}
-                                    y2={`${totalY}%`}
-                                    className="stroke-green-500 stroke-2"
-                                  />
-                                  <line
-                                    x1={`${(index - 1) / (array.length - 1) * 100}%`}
-                                    y1={`${100 - (array[index - 1].userApr / 50) * 100}%`}
-                                    x2={`${x}%`}
-                                    y2={`${userY}%`}
-                                    className="stroke-purple-500 stroke-2"
-                                  />
-                                  <line
-                                    x1={`${(index - 1) / (array.length - 1) * 100}%`}
-                                    y1={`${100 - (array[index - 1].publicApr / 50) * 100}%`}
-                                    x2={`${x}%`}
-                                    y2={`${publicY}%`}
-                                    className="stroke-blue-500 stroke-2"
-                                  />
-                                </>
-                              )}
-                              <circle
-                                cx={`${x}%`}
-                                cy={`${totalY}%`}
-                                r="4"
-                                className="fill-green-500 cursor-pointer"
-                                onMouseEnter={() => setHoveredBar(index)}
-                                onMouseLeave={() => setHoveredBar(null)}
-                              />
-                              <circle
-                                cx={`${x}%`}
-                                cy={`${userY}%`}
-                                r="4"
-                                className="fill-purple-500 cursor-pointer"
-                                onMouseEnter={() => setHoveredBar(index)}
-                                onMouseLeave={() => setHoveredBar(null)}
-                              />
-                              <circle
-                                cx={`${x}%`}
-                                cy={`${publicY}%`}
-                                r="4"
-                                className="fill-blue-500 cursor-pointer"
-                                onMouseEnter={() => setHoveredBar(index)}
-                                onMouseLeave={() => setHoveredBar(null)}
-                              />
-                            </g>
-                          );
-                        })}
-                      </svg>
-                      <AnimatePresence>
-                        {hoveredBar !== null && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-purple-500/90 text-white text-xs px-2 py-1 rounded"
-                          >
-                            <div>Total APR: {MOCK_PERFORMANCE_DATA[selectedTimeframe][hoveredBar].totalApr}%</div>
-                            <div>User APR: {MOCK_PERFORMANCE_DATA[selectedTimeframe][hoveredBar].userApr}%</div>
-                            <div>Public APR: {MOCK_PERFORMANCE_DATA[selectedTimeframe][hoveredBar].publicApr}%</div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                    <div className="flex justify-between text-xs text-purple-300">
-                      <span>{MOCK_PERFORMANCE_DATA[selectedTimeframe][0].day}</span>
-                      <span>{MOCK_PERFORMANCE_DATA[selectedTimeframe][MOCK_PERFORMANCE_DATA[selectedTimeframe].length - 1].day}</span>
-                    </div>
-                    <div className="flex justify-center space-x-4 text-xs">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
-                        <span className="text-purple-300">Total APR</span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-purple-500 rounded-full mr-1"></div>
-                        <span className="text-purple-300">User APR (20%)</span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
-                        <span className="text-purple-300">Public APR (80%)</span>
-                      </div>
-                    </div>
+                  {/* Gráfica de rendimiento */}
+                  <div className="h-64">
+                    <AreaChart
+                      width={500}
+                      height={250}
+                      data={formatChartData(MOCK_PERFORMANCE_DATA[selectedTimeframe])}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="rgb(34, 197, 94)" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="rgb(34, 197, 94)" stopOpacity={0.1} />
+                        </linearGradient>
+                        <linearGradient id="userGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="rgb(168, 85, 247)" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="rgb(168, 85, 247)" stopOpacity={0.1} />
+                        </linearGradient>
+                        <linearGradient id="publicGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="rgb(59, 130, 246)" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="rgb(59, 130, 246)" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis 
+                        dataKey="day" 
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fill: 'rgb(168, 85, 247)' }}
+                      />
+                      <YAxis 
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fill: 'rgb(168, 85, 247)' }}
+                      />
+                      <Tooltip 
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="bg-purple-500/90 text-white text-xs px-3 py-2 rounded-lg shadow-lg">
+                                <div className="font-semibold mb-1">{label}</div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                  <span>Total APR: {payload[0].value}%</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                  <span>User APR: {payload[1].value}%</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                  <span>Public APR: {payload[2].value}%</span>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="totalApr"
+                        stackId="1"
+                        stroke="rgb(34, 197, 94)"
+                        fill="url(#totalGradient)"
+                        fillOpacity={0.4}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="userApr"
+                        stackId="1"
+                        stroke="rgb(168, 85, 247)"
+                        fill="url(#userGradient)"
+                        fillOpacity={0.4}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="publicApr"
+                        stackId="1"
+                        stroke="rgb(59, 130, 246)"
+                        fill="url(#publicGradient)"
+                        fillOpacity={0.4}
+                      />
+                    </AreaChart>
                   </div>
 
                   {/* Distribución del Yield */}
