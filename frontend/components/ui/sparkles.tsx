@@ -95,10 +95,10 @@ export const SparklesCore = (props: ParticlesProps) => {
             particles: {
               bounce: {
                 horizontal: {
-                  value: 1,
+                  value: 0.8,
                 },
                 vertical: {
-                  value: 1,
+                  value: 0.8,
                 },
               },
               collisions: {
@@ -113,8 +113,8 @@ export const SparklesCore = (props: ParticlesProps) => {
                     value: 1,
                   },
                 },
-                enable: false,
-                maxSpeed: 50,
+                enable: true,
+                maxSpeed: 30,
                 mode: "bounce",
                 overlap: {
                   enable: true,
@@ -201,11 +201,11 @@ export const SparklesCore = (props: ParticlesProps) => {
                 outModes: {
                   default: "out",
                 },
-                random: false,
+                random: true,
                 size: false,
                 speed: {
-                  min: 0.1,
-                  max: 1,
+                  min: 0.5,
+                  max: 2,
                 },
                 spin: {
                   acceleration: 0,
@@ -230,23 +230,18 @@ export const SparklesCore = (props: ParticlesProps) => {
                   mode: "delete",
                   value: 0,
                 },
-                value: particleDensity || 120,
+                value: particleDensity || 80,
               },
               opacity: {
                 value: {
                   min: 0.1,
-                  max: 1,
+                  max: 0.8,
                 },
                 animation: {
-                  count: 0,
                   enable: true,
-                  speed: speed || 4,
-                  decay: 0,
-                  delay: 0,
+                  speed: speed || 2,
                   sync: false,
-                  mode: "auto",
                   startValue: "random",
-                  destroy: "none",
                 },
               },
               reduceDuplicates: false,
@@ -269,19 +264,13 @@ export const SparklesCore = (props: ParticlesProps) => {
               },
               size: {
                 value: {
-                  min: minSize || 1,
-                  max: maxSize || 3,
+                  min: minSize || 0.5,
+                  max: maxSize || 2,
                 },
                 animation: {
-                  count: 0,
-                  enable: false,
-                  speed: 5,
-                  decay: 0,
-                  delay: 0,
+                  enable: true,
+                  speed: 3,
                   sync: false,
-                  mode: "auto",
-                  startValue: "random",
-                  destroy: "none",
                 },
               },
               stroke: {
