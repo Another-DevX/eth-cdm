@@ -29,35 +29,22 @@ const parseBadgeData = (credentialData: any): Badge => {
 
 /**
  * Get badges for a user
+ * @param userId User ID to fetch badges for a specific user (required)
  * @returns Promise with badges data
+ * @throws Error if userId is not provided
  */
-const getBadges = async (): Promise<Badge[]> => {
+const getBadges = async (userId: string): Promise<Badge[]> => {
   try {
-    // Comment out the actual API call
-    // const response = await talentApi.get<BadgesApiResponse>('/credentials');
-    // return response.data.credentials.map(parseBadgeData);
-
-    // Use mock data instead
-    const mockData = {
-      "credentials": [
-        {
-          "category": "Activity",
-          "data_issuer_name": "text",
-          "data_issuer_slug": "text",
-          "name": "text",
-          "slug": "text",
-          "updated_at": "2025-05-02T23:34:32.269Z",
-          "points": 1,
-          "external_url": "text",
-          "uom": "text",
-          "max_score": 1,
-          "calculating_score": true
-        }
-      ]
-    };
-
-    // Transform the mock data using the helper function
-    return mockData.credentials.map(parseBadgeData);
+    // Reject if no userId is provided
+    if (!userId) {
+      throw new Error('User ID is required to fetch badges');
+    }
+    
+    // Make API call with the id query parameter
+    const response = await talentApi.get('/credentials', {
+      params: { id: userId }
+    });
+    return response.data.credentials.map(parseBadgeData);
   } catch (error) {
     console.error('Error fetching badges:', error);
     throw error;

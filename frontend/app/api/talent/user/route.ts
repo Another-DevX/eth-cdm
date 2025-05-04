@@ -19,6 +19,9 @@ export async function GET(request: NextRequest) {
 
     // Get user data from the Talent Protocol service
     // const userData = await talentProtocol.getUserByAddress(walletAddress);
+
+    // ⚠⚠⚠⚠  Mocked due to API issues ⚠⚠⚠⚠ 
+
     const userData = {
       userId: '12345',
       userName: 'Another',
