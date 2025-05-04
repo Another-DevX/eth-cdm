@@ -1,12 +1,7 @@
-import { createPublicClient, WalletClient, http, Address } from 'viem';
+import { WalletClient, Address } from 'viem';
 import { soneium_scs } from '@/config';
 import { STAKING_POOL_ADDRESS, STAKING_POOL_ABI } from '@/constants';
-
-// Crear cliente público
-const publicClient = createPublicClient({
-  chain: soneium_scs,
-  transport: http(),
-});
+import { publicClient } from '@/services/client';
 
 export async function stake(
   amount: bigint,

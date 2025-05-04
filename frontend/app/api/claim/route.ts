@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { parseEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { kv } from '@vercel/kv';
-import { client, walletClient } from '@/services/platoCoin';
+import { walletClient as client } from '@/services/client';
 import { givePlatoCoinsToBenefactor } from '@/services/stakingPool';
 import { calculateScores } from '@/app/api/talent/helpers';
 import { talentProtocol } from '@/app/api/services';
@@ -43,12 +43,9 @@ export async function POST(request: NextRequest) {
       tokenAmount,
       `0x${walletAddress}`,
       `0x${account.address}`,
-      walletClient
+      client
     );
 
-    // Wait for transaction to be mined
-    await client.waitForTransactionReceipt({ hash });
-    
     // Store the claim timestamp in Vercel KV
     const timestamp = new Date().toISOString();
     await kv.set(`claim:${walletAddress}`, {

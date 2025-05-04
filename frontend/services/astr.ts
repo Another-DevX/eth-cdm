@@ -1,12 +1,10 @@
-import { createPublicClient, erc20Abi, http, WalletClient } from 'viem'
+import { erc20Abi, WalletClient } from 'viem'
 import { soneium_scs } from '@/config'
 import { ASTR_ADDRESS, STAKING_POOL_ADDRESS } from '@/constants'
+import { publicClient } from '@/services/client'
 
-// Crear cliente público
-const client = createPublicClient({
-  chain: soneium_scs,
-  transport: http(),
-})
+// Use the public client from client.ts
+const client = publicClient
 
 export async function getASTRBalance(address: `0x${string}`) {
   try {

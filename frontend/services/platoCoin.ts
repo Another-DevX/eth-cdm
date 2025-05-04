@@ -1,13 +1,10 @@
-import { createPublicClient, erc20Abi, http, WalletClient } from 'viem'
+import { erc20Abi, WalletClient } from 'viem'
 import { soneium_scs } from '@/config'
 import { PLATOCOIN_ADDRESS, STAKING_POOL_ADDRESS } from '@/constants'
+import { publicClient } from '@/services/client'
 
-
-// Create public client
-export const client = createPublicClient({
-  chain: soneium_scs,
-  transport: http(),
-})
+// Export the public client for backward compatibility
+export const client = publicClient
 export async function getPlatoCoinBalance(address: `0x${string}`) {
   try {
     const balance = await client.readContract({
