@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Badge, UserData } from '../talent/interfaces';
 
 // Define the base URL for the Talent Protocol API
-const baseUrl = process.env.NEXT_PUBLIC_TALENT_API_URL || 'https://api.talentprotocol.com';
+const baseUrl = process.env.TALENT_API_URL;
 
 // Create an axios instance with default configuration
 const talentApi = axios.create({
@@ -12,15 +12,6 @@ const talentApi = axios.create({
     'X-API-KEY': process.env.TALENT_API_KEY || ''
   }
 });
-
-// Interface for the API responses
-interface BadgesApiResponse {
-  data: Badge[];
-}
-
-interface UserApiResponse {
-  data: UserData;
-}
 
 /**
  * Helper function to parse credential data into Badge interface
@@ -45,7 +36,7 @@ const getBadges = async (): Promise<Badge[]> => {
     // Comment out the actual API call
     // const response = await talentApi.get<BadgesApiResponse>('/credentials');
     // return response.data.credentials.map(parseBadgeData);
-    
+
     // Use mock data instead
     const mockData = {
       "credentials": [
@@ -64,7 +55,7 @@ const getBadges = async (): Promise<Badge[]> => {
         }
       ]
     };
-    
+
     // Transform the mock data using the helper function
     return mockData.credentials.map(parseBadgeData);
   } catch (error) {
@@ -98,7 +89,7 @@ const getUserByAddress = async (address: string): Promise<UserData> => {
     //   params: { wallet_address: address }
     // });
     // return parseUserData(response.data.data.profiles[0]);
-    
+
     // Use mock data instead
     const mockData = {
       "profiles": [
@@ -133,7 +124,7 @@ const getUserByAddress = async (address: string): Promise<UserData> => {
         ]
       }
     };
-    
+
     // Parse the mock data using the helper function
     return parseUserData(mockData.profiles[0]);
   } catch (error) {
