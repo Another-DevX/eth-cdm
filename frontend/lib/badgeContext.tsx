@@ -17,6 +17,7 @@ interface BadgeContextType {
   error: Error | null;
   fetchBadges: (userId: string) => Promise<void>;
   getCurrentWithdrawAmount: () => Promise<bigint>;
+  resetPlatoCoinBalance: () => void;
 }
 
 const BadgeContext = createContext<BadgeContextType | undefined>(undefined);
@@ -34,10 +35,10 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
 
   const fetchBadges = async (userId: string) => {
     if (!userId) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Fetch all badge types in parallel
       const [onchainData, developerData, learningData] = await Promise.all([
@@ -45,16 +46,16 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
         rewardsService.getDeveloperBadges(userId),
         rewardsService.getLearningBadges(userId)
       ]);
-      
+
       // Update state with fetched data
       setOnchainScore(onchainData.score);
       setDeveloperScore(developerData.score);
       setLearningScore(learningData.score);
-      
+
       setOnchainBadges(onchainData.badges);
       setDeveloperBadges(developerData.badges);
       setLearningBadges(learningData.badges);
-      
+
       // Also fetch the current withdraw amount
       const withdrawAmount = await getCurrentWithdrawAmount();
       setPlatoCoinBalance(withdrawAmount);
@@ -65,7 +66,7 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   };
-  
+
   /**
    * Get the current withdraw amount from the API
    * @returns Promise with the current withdraw amount as bigint
@@ -82,6 +83,10 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const resetPlatoCoinBalance = () => {
+    setPlatoCoinBalance(BigInt(0));
+  }
+
   return (
     <BadgeContext.Provider
       value={{
@@ -95,7 +100,8 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
         isLoading,
         error,
         fetchBadges,
-        getCurrentWithdrawAmount
+        getCurrentWithdrawAmount,
+        resetPlatoCoinBalance
       }}
     >
       {children}

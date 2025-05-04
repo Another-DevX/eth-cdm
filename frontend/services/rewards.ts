@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { Badge } from '../app/api/talent/interfaces';
+import { Address } from 'viem';
+
 
 // Base URL for API calls
 const API_BASE_URL = '/api/talent/badges';
@@ -97,21 +99,14 @@ const rewardsService = {
     }
   },
 
-  /**
-   * Claim rewards for a specific badge category
-   * @param category Badge category (onchain, developer, learning)
-   * @param userId User ID to claim rewards for
-   * @returns Promise with claim response
-   */
-  claimRewards: async (category: 'onchain' | 'developer' | 'learning', userId?: string): Promise<any> => {
+  claim: async (): Promise<{ amount: number }> => {
     try {
-      const response = await axios.post(`${API_BASE_URL}`, {
-        category,
-        userId
+      const response = await axios.post<{ amount: number }>(`api/claim`, {
+        "walletAddress": "0x1234567890abcdef1234567890abcdef12345678"
       });
       return response.data;
     } catch (error) {
-      console.error(`Error claiming ${category} rewards:`, error);
+      console.error('Error claiming tokens:', error);
       throw error;
     }
   }

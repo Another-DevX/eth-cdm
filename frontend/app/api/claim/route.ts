@@ -6,9 +6,12 @@ import { walletClient as client } from '@/services/client';
 import { givePlatoCoinsToBenefactor } from '@/services/stakingPool';
 import { calculateScores } from '@/app/api/talent/helpers';
 import { talentProtocol } from '@/app/api/services';
+import badgesData from '../talent/badges/badges.json';
+
 
 import path from 'path';
 import fs from 'fs';
+import { BadgeApiResponse } from '../talent/interfaces';
 
 // // Get private key from environment variable
 // const PRIVATE_KEY = process.env.PRIVATE_KEY;
@@ -16,70 +19,71 @@ import fs from 'fs';
 // if (!PRIVATE_KEY) {
 //   throw new Error('PRIVATE_KEY is not set');
 // }
-
-// // Create account from private key
+// // // Create account from private key
 // const account = privateKeyToAccount(PRIVATE_KEY as `0x${string}`);
 
-// export async function POST(request: NextRequest) {
-//   try {
-//     // Get wallet address from request body
-//     const body = await request.json();
-//     const { walletAddress } = body;
+export async function POST(request: NextRequest) {
+  try {
+    //     // Get wallet address from request body
+    const body = await request.json();
+    const { walletAddress } = body;
 
-//     if (!walletAddress) {
-//       return NextResponse.json(
-//         { message: 'Wallet address is required' },
-//         { status: 400 }
-//       );
-//     }
+    // if (!walletAddress) {
+    //   return NextResponse.json(
+    //     { message: 'Wallet address is required' },
+    //     { status: 400 }
+    //   );
+    // }
 
-//     // Get badges from the Talent Protocol service
-//     const badges = await talentProtocol.getBadges();
+    //     // Get badges from the Talent Protocol service
+    //const badges = await talentProtocol.getBadges();
+    const badges: BadgeApiResponse[] = badgesData
 
-//     // Calculate all scores
-//     const scores = calculateScores(badges);
+    //     // Calculate all scores
+    const scores = calculateScores(badges);
 
-//     // Calculate total score (this is the amount of tokens to mint)
-//     const totalScore = scores.onchainActivity + scores.developer + scores.learning;
+    //     // Calculate total score (this is the amount of tokens to mint)
+    const totalScore = scores.onchainActivity + scores.developer + scores.learning;
 
-//     // Convert score to token amount (with 18 decimals)
-//     const tokenAmount = parseEther(totalScore.toString());
+    //     // Convert score to token amount (with 18 decimals)
+    const tokenAmount = parseEther(totalScore.toString());
 
-//     // Give PlatoCoins to the benefactor (user)
-//     const hash = await givePlatoCoinsToBenefactor(
-//       tokenAmount,
-//       `0x${walletAddress}`,
-//       `0x${account.address}`,
-//       client
-//     );
+    //     // Give PlatoCoins to the benefactor (user)
+    //     const hash = await givePlatoCoinsToBenefactor(
+    //       tokenAmount,
+    //       `0x${walletAddress}`,
+    //       `0x${account.address}`,
+    //       client
+    //     );
 
-//     // Store the claim timestamp in Vercel KV
-//     const timestamp = new Date().toISOString();
-//     await kv.set(`claim:${walletAddress}`, {
-//       timestamp,
-//       amount: totalScore,
-//       txHash: hash
-//     });
+    const filePath = path.join(process.cwd(), 'app/api/talent/badges/withdrawal.json');
 
-//     return NextResponse.json({
-//       amount: totalScore,
-//       timestamp,
-//       txHash: hash
-//     });
+    // Create the updated data
+    const withdrawalData = {
+      currentWithdrawAmount: 0
+    };
 
-//   } catch (error: any) {
-//     console.error('Error claiming tokens:', error);
+    // Write to local file
+    fs.writeFileSync(filePath, JSON.stringify(withdrawalData, null, 2));
 
-//     return NextResponse.json(
-//       {
-//         success: false,
-//         message: 'Failed to claim tokens',
-//         error: error.message
-//       },
-//       { status: 500 }
-//     );
-//   }
-// }
+
+    return NextResponse.json({
+      amount: totalScore,
+
+    });
+
+  } catch (error: any) {
+    console.error('Error claiming tokens:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to claim tokens',
+        error: error.message
+      },
+      { status: 500 }
+    );
+  }
+}
 
 export async function GET() {
   try {

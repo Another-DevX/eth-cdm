@@ -1,5 +1,7 @@
 'use client';
 
+import { rewardsService } from '@/services';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
@@ -60,7 +62,8 @@ export function Dashboard() {
     isLoading: isBadgesLoading,
     error: badgesError,
     fetchBadges,
-    platoCoinBalance
+    platoCoinBalance,
+    resetPlatoCoinBalance
   } = useBadges();
 
 
@@ -162,8 +165,11 @@ export function Dashboard() {
     setSelectedBadge(null);
   };
 
-  const handlePlatoCoinsClaim = () => {
+  const handlePlatoCoinsClaim = async () => {
+    await rewardsService.claim()
     setShowPlatoCoinsEffect(true);
+    resetPlatoCoinBalance()
+
   };
 
   const handleClosePlatoCoinsEffect = () => {
