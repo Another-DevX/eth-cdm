@@ -291,17 +291,25 @@ export function Liquidity() {
                           <stop offset="95%" stopColor="rgb(59, 130, 246)" stopOpacity={0.1} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <CartesianGrid 
+                        strokeDasharray="2 2" 
+                        vertical={false} 
+                        stroke="rgba(168, 85, 247, 0.1)"
+                        strokeWidth={0.5}
+                      />
                       <XAxis 
                         dataKey="day" 
                         tickLine={false}
                         axisLine={false}
-                        tick={{ fill: 'rgb(168, 85, 247)' }}
+                        tick={{ fill: 'rgb(168, 85, 247)', fontSize: 12 }}
                       />
                       <YAxis 
                         tickLine={false}
                         axisLine={false}
-                        tick={{ fill: 'rgb(168, 85, 247)' }}
+                        tick={{ fill: 'rgb(168, 85, 247)', fontSize: 12 }}
+                        tickFormatter={(value) => `${value}%`}
+                        domain={[0, 100]}
+                        ticks={[0, 20, 40, 60, 80, 100]}
                       />
                       <Tooltip 
                         content={({ active, payload, label }) => {

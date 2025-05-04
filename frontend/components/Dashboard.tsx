@@ -4,40 +4,40 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Clock, Coins, CheckCircle2, Sun, Moon } from 'lucide-react';
+import { Trophy, Clock, Coins, CheckCircle2, Sun, Moon, Activity, Code2, GraduationCap } from 'lucide-react';
 import { useTheme } from '@/lib/theme';
 import { EvervaultCard, Icon } from './ui/evervault-card';
 
 interface Badge {
   name: string;
   points: number;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
 }
 
 const mockBadges: Badge[] = [
   {
-    name: 'Active Contributor',
+    name: 'Onchain Activity',
     points: 100,
-    icon: '🏆',
+    icon: <Activity className="w-12 h-12 text-purple-500" />,
     color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
   },
   {
-    name: 'Senior Developer',
+    name: 'Developer',
     points: 200,
-    icon: '💻',
+    icon: <Code2 className="w-12 h-12 text-purple-500" />,
     color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
   },
   {
-    name: 'Mentor',
+    name: 'Learning',
     points: 150,
-    icon: '👨‍🏫',
+    icon: <GraduationCap className="w-12 h-12 text-purple-500" />,
     color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
   },
 ];
 
 const SEASON_START_DATE = new Date('2024-01-01T00:00:00');
-const SEASON_END_DATE = new Date('2024-12-31T23:59:59');
+const SEASON_END_DATE = new Date('2025-12-31T23:59:59');
 
 export function Dashboard() {
   const [timeLeft, setTimeLeft] = useState<string>('');
@@ -139,7 +139,7 @@ export function Dashboard() {
                         <div className="rounded-2xl bg-black w-full h-full flex items-center justify-center">
                           <EvervaultCard>
                             <div className='flex flex-col items-center justify-center w-full'>
-                              <span className='text-5xl mb-2 drop-shadow-lg'>{badge.icon}</span>
+                              <div className="mb-2">{badge.icon}</div>
                               <span className='text-lg font-bold text-black dark:text-white text-center'>{badge.name}</span>
                               <span className='text-base text-purple-500 font-semibold'>{badge.points} puntos</span>
                             </div>
