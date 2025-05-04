@@ -80,53 +80,35 @@ const parseUserData = (profileData: any): UserData => {
 /**
  * Get user data by wallet address
  * @param address Wallet address of the user
+ * @param queryParams Optional query parameters for the API request
  * @returns Promise with user data
  */
 const getUserByAddress = async (address: string): Promise<UserData> => {
   try {
-    // Comment out the actual API call
-    // const response = await talentApi.get<UserApiResponse>(`/search/advanced/profiles`, {
-    //   params: { wallet_address: address }
-    // });
-    // return parseUserData(response.data.data.profiles[0]);
-
-    // Use mock data instead
-    const mockData = {
-      "profiles": [
-        {
-          "id": "text",
-          "bio": null,
-          "created_at": "2025-05-04T06:28:58.389Z",
-          "display_name": null,
-          "human_checkmark": true,
-          "image_url": null,
-          "location": null,
-          "name": null,
-          "calculating_score": true,
-          "tags": [
-            "text"
-          ],
-          "verified_nationality": true,
-          "builder_score": {
-            "points": 1,
-            "last_calculated_at": "2025-05-04T06:28:58.389Z"
-          }
+    // Prepare the search query with the wallet address
+    const searchQuery = {
+      query: {
+        walletAddresses: [address]
+      },
+      sort: {
+        id: {
+          order: "asc"
         }
-      ],
-      "pagination": {
-        "current_page": 1,
-        "last_page": 1,
-        "total": 1,
-        "total_for_page": 1,
-        "point_in_time_id": null,
-        "search_after": [
-          1
-        ]
-      }
+      },
+      page: 1,
+      per_page: 25
     };
 
-    // Parse the mock data using the helper function
-    return parseUserData(mockData.profiles[0]);
+    // Make the API call with the search query
+    const response = await talentApi.post('/search/advanced/profiles', searchQuery);
+
+    // Check if profiles exist in the response
+    if (!response.data.profiles || response.data.profiles.length === 0) {
+      throw new Error('No user found with the provided wallet address');
+    }
+
+    // Parse and return the user data
+    return parseUserData(response.data.profiles[0]);
   } catch (error) {
     console.error('Error fetching user data:', error);
     throw error;
