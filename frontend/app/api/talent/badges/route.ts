@@ -12,6 +12,40 @@ import badgesData from './badges.json';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * GET handler for badge withdrawal amount
+ * Returns the current withdrawal amount from the JSON file
+ */
+export async function GET() {
+  try {
+    // Load the current withdrawal amount from the file
+    const filePath = path.join(process.cwd(), 'app/api/talent/badges/withdrawal.json');
+    let currentData = { currentWithdrawAmount: 0 };
+
+    try {
+      if (fs.existsSync(filePath)) {
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        currentData = JSON.parse(fileContent);
+      }
+    } catch (err) {
+      console.error('Error reading withdrawal file:', err);
+    }
+
+    return NextResponse.json({
+      currentWithdrawAmount: currentData.currentWithdrawAmount,
+      success: true
+    });
+  } catch (error) {
+    console.error('Error fetching withdrawal amount:', error);
+    return NextResponse.json(
+      {
+        message: 'Failed to fetch withdrawal amount',
+        success: false
+      },
+      { status: 500 }
+    );
+  }
+}
 
 /**
  * POST handler for badge withdrawal

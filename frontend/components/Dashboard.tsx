@@ -53,20 +53,16 @@ export function Dashboard() {
 
 
   // Get badge data from context
-  const { 
-    onchainScore, 
-    developerScore, 
-    learningScore, 
+  const {
+    onchainScore,
+    developerScore,
+    learningScore,
     isLoading: isBadgesLoading,
     error: badgesError,
-    fetchBadges
+    fetchBadges,
+    platoCoinBalance
   } = useBadges();
 
-  const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } =
-    useQuery({
-      queryKey: ['platoCoinBalance', address],
-      queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
-    });
 
   // Fetch badge data on mount - only once when address is available
   useEffect(() => {
@@ -131,7 +127,7 @@ export function Dashboard() {
     try {
       // Determine category from badge name
       let category: 'onchain' | 'developer' | 'learning';
-      
+
       if (badge.name === 'Onchain Activity') {
         category = 'onchain';
       } else if (badge.name === 'Developer') {
@@ -141,19 +137,19 @@ export function Dashboard() {
       } else {
         throw new Error(`Unknown badge type: ${badge.name}`);
       }
-      
+
       // Call the claim API directly
       const result = await axios.post('/api/talent/badges', {
         category,
         userId: address
       });
-      
+
       // Show success message
       toast.success(`Claimed ${result.data.data.rewardType}: ${result.data.data.currentWithdrawAmount}`);
-      
+
       // Set the selected badge for animation
       setSelectedBadge(badge);
-      
+
       // Add badge to claimed badges
       setClaimedBadges(prev => [...prev, badge.name]);
     } catch (error) {
@@ -279,18 +275,17 @@ export function Dashboard() {
                           Claim this badge for your outstanding achievement!
                         </p>
                         <Button
-                          className={`w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 border-0 ${
-                            claimedBadges.includes(badge.name) ? 'opacity-50 cursor-not-allowed' : 
+                          className={`w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 border-0 ${claimedBadges.includes(badge.name) ? 'opacity-50 cursor-not-allowed' :
                             isBadgesLoading ? 'opacity-70 cursor-wait' : ''
-                          }`}
+                            }`}
                           onClick={() => handleClaim(badge)}
                           disabled={
-                            claimedBadges.includes(badge.name) || 
+                            claimedBadges.includes(badge.name) ||
                             isBadgesLoading
                           }
                         >
-                          {claimedBadges.includes(badge.name) ? 'Claimed' : 
-                           isBadgesLoading ? 'Loading...' : 'Claim Badge'}
+                          {claimedBadges.includes(badge.name) ? 'Claimed' :
+                            isBadgesLoading ? 'Loading...' : 'Claim Badge'}
                         </Button>
                       </div>
                     </motion.div>
@@ -371,12 +366,11 @@ export function Dashboard() {
                         Total claimable PlatoCoins
                       </span>
                     </div>
-                    {isPlatoCoinBalanceLoading ? (
-                      <Skeleton className='h-8 w-24 bg-purple-500/20' />
-                    ) : (
+                    {platoCoinBalance ? (
                       <span className='text-2xl font-bold text-purple-500'>
-                        {formatEther(platoCoinBalance || BigInt(0))}
-                      </span>
+                        {(platoCoinBalance || BigInt(0))}
+                      </span>) : (
+                      <>  </>
                     )}
                   </div>
                   <Button
