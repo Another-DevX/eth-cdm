@@ -4,3 +4,10 @@ out = "out"
 libs = ["lib"]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+[etherscan]
+soneium = { key = "8f68d183-7413-4ad1-9709-d18a6adce514"}
+
+[rpc_endpoints]
+soneium = { url = "https://soneium.rpc.scs.startale.com?apikey=TOsbOdqgCfLjFqxm6AUdpsRqo660y2Sv" }
+
