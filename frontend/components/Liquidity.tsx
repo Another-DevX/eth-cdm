@@ -163,6 +163,8 @@ export function Liquidity() {
       toast('Stake successful');
       setShowStakeModal(false);
       queryClient.refetchQueries({ queryKey: ['astrBalance', address] });
+      queryClient.refetchQueries({ queryKey: ['userStakedAmount', address] });
+      queryClient.refetchQueries({ queryKey: ['astrAllowance', address] });
     },
     onError: (error) => {
       toast.error('Stake failed');

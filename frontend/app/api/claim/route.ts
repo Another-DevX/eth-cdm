@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { kv } from '@vercel/kv';
 import { walletClient as client } from '@/services/client';
 import { givePlatoCoinsToBenefactor } from '@/services/stakingPool';
 import { calculateScores } from '@/app/api/talent/helpers';
-import { talentProtocol } from '@/app/api/services';
 import badgesData from '../talent/badges/badges.json';
 
 import path from 'path';
 import fs from 'fs';
-import { BadgeApiResponse } from '../talent/interfaces';
 
 // // Get private key from environment variable
 // const PRIVATE_KEY = process.env.PRIVATE_KEY;
@@ -39,8 +36,8 @@ export async function POST(request: NextRequest) {
 
     //     // Get badges from the Talent Protocol service
     //const badges = await talentProtocol.getBadges();
-    const badges: BadgeApiResponse[] = badgesData;
-
+    const badges: any= badgesData ;
+ 
     //     // Calculate all scores
     const scores = calculateScores(badges);
 
