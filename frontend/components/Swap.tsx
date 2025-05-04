@@ -174,7 +174,7 @@ export function Swap() {
                     {isLoadingBalance ? (
                       <Skeleton className="h-4 w-16 bg-purple-500/20" />
                     ) : (
-                      `Balance: ${formatEther(platoCoinBalance || BigInt(0))} PT`
+                      `Balance: ${Number(formatEther(platoCoinBalance || BigInt(0))).toFixed(2)} PT`
                     )}
                   </span>
                 </div>

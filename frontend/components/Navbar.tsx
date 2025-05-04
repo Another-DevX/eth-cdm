@@ -94,7 +94,7 @@ export function Navbar({
                 <Skeleton className="h-4 w-20 bg-purple-500/20" />
               ) : (
                 <span className='text-foreground font-semibold'>
-                  {formatEther(platoCoinBalance || BigInt(0))}
+                  {Number(formatEther(platoCoinBalance || BigInt(0))).toFixed(0)}
                 </span>
               )}
             </div>
