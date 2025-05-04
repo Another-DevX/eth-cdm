@@ -4,9 +4,24 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Clock, Coins, CheckCircle2, Sun, Moon, Activity, Code2, GraduationCap } from 'lucide-react';
+import {
+  Trophy,
+  Clock,
+  Coins,
+  CheckCircle2,
+  Sun,
+  Moon,
+  Activity,
+  Code2,
+  GraduationCap,
+} from 'lucide-react';
 import { useTheme } from '@/lib/theme';
 import { EvervaultCard, Icon } from './ui/evervault-card';
+import { useQuery } from '@tanstack/react-query';
+import { useAccount } from 'wagmi';
+import { getPlatoCoinBalance } from '@/services/platoCoin';
+import { Skeleton } from '@/components/ui/skeleton';
+import { formatEther } from 'viem';
 
 interface Badge {
   name: string;
@@ -19,19 +34,19 @@ const mockBadges: Badge[] = [
   {
     name: 'Onchain Activity',
     points: 100,
-    icon: <Activity className="w-12 h-12 text-purple-500" />,
+    icon: <Activity className='w-12 h-12 text-purple-500' />,
     color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
   },
   {
     name: 'Developer',
     points: 200,
-    icon: <Code2 className="w-12 h-12 text-purple-500" />,
+    icon: <Code2 className='w-12 h-12 text-purple-500' />,
     color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
   },
   {
     name: 'Learning',
     points: 150,
-    icon: <GraduationCap className="w-12 h-12 text-purple-500" />,
+    icon: <GraduationCap className='w-12 h-12 text-purple-500' />,
     color: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]',
   },
 ];
@@ -44,6 +59,12 @@ export function Dashboard() {
   const [progress, setProgress] = useState<number>(0);
   const [canClaim, setCanClaim] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { address } = useAccount();
+
+  const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } = useQuery({
+    queryKey: ['platoCoinBalance', address],
+    queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
+  });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -135,22 +156,30 @@ export function Dashboard() {
                       className='relative flex flex-col items-center justify-between w-80 h-96 p-4 group'
                     >
                       {/* Borde gradiente exterior */}
-                      <div className="rounded-3xl p-1 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full">
-                        <div className="rounded-2xl bg-black w-full h-full flex items-center justify-center">
+                      <div className='rounded-3xl p-1 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full'>
+                        <div className='rounded-2xl bg-black w-full h-full flex items-center justify-center'>
                           <EvervaultCard>
                             <div className='flex flex-col items-center justify-center w-full'>
-                              <div className="mb-2">{badge.icon}</div>
-                              <span className='text-lg font-bold text-black dark:text-white text-center'>{badge.name}</span>
-                              <span className='text-base text-purple-500 font-semibold'>{badge.points} puntos</span>
+                              <div className='mb-2'>{badge.icon}</div>
+                              <span className='text-lg font-bold text-black dark:text-white text-center'>
+                                {badge.name}
+                              </span>
+                              <span className='text-base text-purple-500 font-semibold'>
+                                {badge.points} puntos
+                              </span>
                             </div>
                           </EvervaultCard>
                         </div>
                       </div>
                       <div className='w-full mt-6 flex flex-col items-center'>
-                        <p className='text-sm text-gray-400 text-center mb-4'>¡Reclama este badge por tu logro destacado!</p>
+                        <p className='text-sm text-gray-400 text-center mb-4'>
+                          ¡Reclama este badge por tu logro destacado!
+                        </p>
                         <Button
                           className='w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 border-0'
-                          onClick={() => alert(`¡Has reclamado el badge: ${badge.name}!`)}
+                          onClick={() =>
+                            alert(`¡Has reclamado el badge: ${badge.name}!`)
+                          }
                         >
                           Reclamar Badge
                         </Button>
@@ -233,9 +262,13 @@ export function Dashboard() {
                         Total PlatoCoins
                       </span>
                     </div>
-                    <span className='text-2xl font-bold text-purple-500'>
-                      {totalPlatoCoins}
-                    </span>
+                    {isPlatoCoinBalanceLoading ? (
+                      <Skeleton className="h-8 w-24 bg-purple-500/20" />
+                    ) : (
+                      <span className='text-2xl font-bold text-purple-500'>
+                        {formatEther(platoCoinBalance || BigInt(0))}
+                      </span>
+                    )}
                   </div>
                   <Button
                     onClick={handleClaim}

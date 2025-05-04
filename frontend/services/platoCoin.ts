@@ -15,6 +15,7 @@ export async function getPlatoCoinBalance(address: `0x${string}`) {
       functionName: 'balanceOf',
       args: [address],
     })
+    console.debug({balance})
     return balance
   } catch (error) {
     console.error('Error while getting plato coin balance', error)
