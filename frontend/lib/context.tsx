@@ -3,24 +3,19 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface AppContextType {
-  isWalletConnected: boolean;
   isVerified: boolean;
-  setIsWalletConnected: (value: boolean) => void;
   setIsVerified: (value: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
   return (
     <AppContext.Provider
       value={{
-        isWalletConnected,
         isVerified,
-        setIsWalletConnected,
         setIsVerified,
       }}
     >
