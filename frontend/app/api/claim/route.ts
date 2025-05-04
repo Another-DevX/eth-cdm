@@ -8,10 +8,14 @@ import { calculateScores } from '@/app/api/talent/helpers';
 import { talentProtocol } from '@/app/api/services';
 
 // Get private key from environment variable
-const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
+if (!PRIVATE_KEY) {
+  throw new Error('PRIVATE_KEY is not set');
+}
 
 // Create account from private key
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(PRIVATE_KEY as `0x${string}`);
 
 export async function POST(request: NextRequest) {
   try {
