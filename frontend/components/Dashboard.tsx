@@ -114,21 +114,6 @@ export function Dashboard() {
   return (
     <div className='min-h-screen p-8 bg-background'>
       <div className='container mx-auto max-w-6xl'>
-        <div className='flex justify-end mb-6'>
-          <Button
-            onClick={toggleTheme}
-            variant='outline'
-            size='icon'
-            className='rounded-full border-purple-500/50 text-purple-500 hover:bg-purple-500/10 transition-all duration-300 hover:scale-110'
-          >
-            {theme === 'dark' ? (
-              <Sun className='h-5 w-5' />
-            ) : (
-              <Moon className='h-5 w-5' />
-            )}
-          </Button>
-        </div>
-
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -146,17 +131,17 @@ export function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent className='p-6'>
-                <div className='flex flex-col md:flex-row gap-6 justify-center items-center'>
+                <div className='flex flex-col md:flex-row gap-8 justify-center items-center'>
                   {mockBadges.map((badge, index) => (
                     <motion.div
                       key={badge.name}
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.2 }}
-                      className='relative flex flex-col items-center justify-between w-80 h-96 p-4 group'
+                      className='relative flex flex-col items-center w-80 p-6 space-y-6 group'
                     >
                       {/* Borde gradiente exterior */}
-                      <div className='rounded-3xl p-1 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full'>
+                      <div className='rounded-3xl p-1 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full flex-1'>
                         <div className='rounded-2xl bg-black w-full h-full flex items-center justify-center'>
                           <EvervaultCard>
                             <div className='flex flex-col items-center justify-center w-full'>
@@ -171,7 +156,7 @@ export function Dashboard() {
                           </EvervaultCard>
                         </div>
                       </div>
-                      <div className='w-full mt-6 flex flex-col items-center'>
+                      <div className='w-full flex flex-col items-center'>
                         <p className='text-sm text-gray-400 text-center mb-4'>
                           ¡Reclama este badge por tu logro destacado!
                         </p>
