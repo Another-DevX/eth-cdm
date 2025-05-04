@@ -1,0 +1,794 @@
+[
+    {
+        "Data Issuer": "Arbitrum",
+        "Credential Name": "ETH Balance",
+        "valueRange": {
+            "min": 18,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Arbitrum",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 24,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "Arbitrum",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 16,
+            "max": 29
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Base Active Smart Contracts",
+        "valueRange": {
+            "min": 22,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Base Around The World Participant",
+        "valueRange": {
+            "min": 14,
+            "max": 26
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Base Around The World Winner",
+        "valueRange": {
+            "min": 21,
+            "max": 22
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "/base-builds ETH Earnings",
+        "valueRange": {
+            "min": 20,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Basecamp Attendee",
+        "valueRange": {
+            "min": 13,
+            "max": 26
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Base Learn",
+        "valueRange": {
+            "min": 14,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Contracts Deployed (Mainnet)",
+        "valueRange": {
+            "min": 17,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Contracts Deployed (Testnet)",
+        "valueRange": {
+            "min": 18,
+            "max": 29
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "ETH Balance",
+        "valueRange": {
+            "min": 20,
+            "max": 25
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 11,
+            "max": 19
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Onchain Summer Buildathon Participant",
+        "valueRange": {
+            "min": 23,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Onchain Summer Buildathon Winner",
+        "valueRange": {
+            "min": 12,
+            "max": 18
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 15,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "Base",
+        "Credential Name": "Primary Basename",
+        "valueRange": {
+            "min": 17,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "Binance",
+        "Credential Name": "Binance Account Bound Token",
+        "valueRange": {
+            "min": 25,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "BNB Chain",
+        "Credential Name": "BNB Balance",
+        "valueRange": {
+            "min": 10,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "BNB Chain",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 12,
+            "max": 21
+        }
+    },
+    {
+        "Data Issuer": "BNB Chain",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 18,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Bonsai",
+        "Credential Name": "Bonsai Airdrop 1",
+        "valueRange": {
+            "min": 21,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Bountycaster",
+        "Credential Name": "Bounties Completed",
+        "valueRange": {
+            "min": 24,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "BUILD",
+        "Credential Name": "$BUILD Contribution",
+        "valueRange": {
+            "min": 15,
+            "max": 25
+        }
+    },
+    {
+        "Data Issuer": "Celo",
+        "Credential Name": "Celo Active Smart Contracts",
+        "valueRange": {
+            "min": 21,
+            "max": 29
+        }
+    },
+    {
+        "Data Issuer": "Celo",
+        "Credential Name": "Contracts Deployed (Mainnet)",
+        "valueRange": {
+            "min": 23,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Celo",
+        "Credential Name": "Contracts Deployed (Testnet)",
+        "valueRange": {
+            "min": 14,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "Coinbase",
+        "Credential Name": "Country Verification",
+        "valueRange": {
+            "min": 19,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "Coinbase",
+        "Credential Name": "Identity Verification",
+        "valueRange": {
+            "min": 26,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Crypto Nomads",
+        "Credential Name": "CNC Member",
+        "valueRange": {
+            "min": 11,
+            "max": 17
+        }
+    },
+    {
+        "Data Issuer": "DAOBase",
+        "Credential Name": "DAO Badge Score",
+        "valueRange": {
+            "min": 14,
+            "max": 22
+        }
+    },
+    {
+        "Data Issuer": "Degen",
+        "Credential Name": "Degen Allowance",
+        "valueRange": {
+            "min": 24,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Developer",
+        "Credential Name": "DAO D_D Member",
+        "valueRange": {
+            "min": 20,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Developer",
+        "Credential Name": "DAO D_D OG",
+        "valueRange": {
+            "min": 12,
+            "max": 18
+        }
+    },
+    {
+        "Data Issuer": "ENS",
+        "Credential Name": "ENS Account Age",
+        "valueRange": {
+            "min": 22,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "ENS",
+        "Credential Name": "Primary ENS Domain",
+        "valueRange": {
+            "min": 13,
+            "max": 22
+        }
+    },
+    {
+        "Data Issuer": "Ethereum",
+        "Credential Name": "ETH Balance",
+        "valueRange": {
+            "min": 29,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Ethereum",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 12,
+            "max": 19
+        }
+    },
+    {
+        "Data Issuer": "Ethereum",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 15,
+            "max": 26
+        }
+    },
+    {
+        "Data Issuer": "ETHGlobal",
+        "Credential Name": "ETHGlobal Builder",
+        "valueRange": {
+            "min": 23,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "ETHGlobal",
+        "Credential Name": "ETHGlobal Hacker",
+        "valueRange": {
+            "min": 15,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "ETHGlobal",
+        "Credential Name": "ETHGlobal OG",
+        "valueRange": {
+            "min": 17,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "ETHGlobal",
+        "Credential Name": "ETHGlobal Partner",
+        "valueRange": {
+            "min": 22,
+            "max": 29
+        }
+    },
+    {
+        "Data Issuer": "ETHGlobal",
+        "Credential Name": "ETHGlobal Pioneer",
+        "valueRange": {
+            "min": 13,
+            "max": 17
+        }
+    },
+    {
+        "Data Issuer": "ETHGlobal",
+        "Credential Name": "ETHGlobal Supporter",
+        "valueRange": {
+            "min": 25,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Farcaster",
+        "Credential Name": "Farcaster Account Age",
+        "valueRange": {
+            "min": 20,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "Farcaster",
+        "Credential Name": "Farcaster Account ID",
+        "valueRange": {
+            "min": 18,
+            "max": 25
+        }
+    },
+    {
+        "Data Issuer": "Farcaster",
+        "Credential Name": "Frame Builder Rewards",
+        "valueRange": {
+            "min": 21,
+            "max": 29
+        }
+    },
+    {
+        "Data Issuer": "Farcaster",
+        "Credential Name": "Warpcast Rewards Average Score",
+        "valueRange": {
+            "min": 12,
+            "max": 14
+        }
+    },
+    {
+        "Data Issuer": "Farcaster",
+        "Credential Name": "Warpcast Spam Label",
+        "valueRange": {
+            "min": 14,
+            "max": 20
+        }
+    },
+    {
+        "Data Issuer": "Farcaster",
+        "Credential Name": "Warpcast USDC Rewards",
+        "valueRange": {
+            "min": 16,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "FWB",
+        "Credential Name": "FWB Member",
+        "valueRange": {
+            "min": 21,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Galxe",
+        "Credential Name": "Galxe Passport",
+        "valueRange": {
+            "min": 14,
+            "max": 20
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Account",
+        "valueRange": {
+            "min": 19,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Account Age",
+        "valueRange": {
+            "min": 11,
+            "max": 18
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Crypto Repositories Commits",
+        "valueRange": {
+            "min": 24,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Crypto Repositories Contributed",
+        "valueRange": {
+            "min": 14,
+            "max": 22
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Followers",
+        "valueRange": {
+            "min": 22,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Forks",
+        "valueRange": {
+            "min": 19,
+            "max": 25
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Repositories",
+        "valueRange": {
+            "min": 17,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Stars",
+        "valueRange": {
+            "min": 20,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "GitHub",
+        "Credential Name": "GitHub Total Contributions",
+        "valueRange": {
+            "min": 14,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "Human.tech",
+        "Credential Name": "Identity Verification",
+        "valueRange": {
+            "min": 16,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "Jumper",
+        "Credential Name": "Jumper Pass Level",
+        "valueRange": {
+            "min": 23,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Lens",
+        "Credential Name": "Lens Account",
+        "valueRange": {
+            "min": 25,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Lens",
+        "Credential Name": "Lens Account Age",
+        "valueRange": {
+            "min": 16,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "LinkedIn",
+        "Credential Name": "LinkedIn Account",
+        "valueRange": {
+            "min": 11,
+            "max": 19
+        }
+    },
+    {
+        "Data Issuer": "Onchain Activity",
+        "Credential Name": "Active Smart Contracts",
+        "valueRange": {
+            "min": 14,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "Onchain Activity",
+        "Credential Name": "Contracts Deployed (Mainnet)",
+        "valueRange": {
+            "min": 18,
+            "max": 27
+        }
+    },
+    {
+        "Data Issuer": "Onchain Activity",
+        "Credential Name": "Contracts Deployed (Testnet)",
+        "valueRange": {
+            "min": 20,
+            "max": 26
+        }
+    },
+    {
+        "Data Issuer": "Onchain Activity",
+        "Credential Name": "ETH Balance",
+        "valueRange": {
+            "min": 17,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "Onchain Activity",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 13,
+            "max": 15
+        }
+    },
+    {
+        "Data Issuer": "Onchain Activity",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 22,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Optimism",
+        "Credential Name": "Contracts Deployed (Mainnet)",
+        "valueRange": {
+            "min": 12,
+            "max": 19
+        }
+    },
+    {
+        "Data Issuer": "Optimism",
+        "Credential Name": "Contracts Deployed (Testnet)",
+        "valueRange": {
+            "min": 16,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "Optimism",
+        "Credential Name": "ETH Balance",
+        "valueRange": {
+            "min": 23,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Optimism",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 11,
+            "max": 17
+        }
+    },
+    {
+        "Data Issuer": "Optimism",
+        "Credential Name": "OP Active Smart Contracts",
+        "valueRange": {
+            "min": 15,
+            "max": 25
+        }
+    },
+    {
+        "Data Issuer": "Optimism",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 18,
+            "max": 29
+        }
+    },
+    {
+        "Data Issuer": "Safe",
+        "Credential Name": "Safe Signer",
+        "valueRange": {
+            "min": 27,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Scroll",
+        "Credential Name": "Contracts Deployed (Mainnet)",
+        "valueRange": {
+            "min": 20,
+            "max": 25
+        }
+    },
+    {
+        "Data Issuer": "Scroll",
+        "Credential Name": "Contracts Deployed (Testnet)",
+        "valueRange": {
+            "min": 12,
+            "max": 18
+        }
+    },
+    {
+        "Data Issuer": "Scroll",
+        "Credential Name": "ETH Balance",
+        "valueRange": {
+            "min": 22,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Scroll",
+        "Credential Name": "First Transaction",
+        "valueRange": {
+            "min": 14,
+            "max": 21
+        }
+    },
+    {
+        "Data Issuer": "Scroll",
+        "Credential Name": "Outgoing Transactions",
+        "valueRange": {
+            "min": 17,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "Scroll",
+        "Credential Name": "Scroll Active Smart Contracts",
+        "valueRange": {
+            "min": 13,
+            "max": 20
+        }
+    },
+    {
+        "Data Issuer": "Self.xyz",
+        "Credential Name": "Identity Verification",
+        "valueRange": {
+            "min": 19,
+            "max": 26
+        }
+    },
+    {
+        "Data Issuer": "Self.xyz",
+        "Credential Name": "Nationality Verification",
+        "valueRange": {
+            "min": 24,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Serotonin",
+        "Credential Name": "Platform Member",
+        "valueRange": {
+            "min": 12,
+            "max": 17
+        }
+    },
+    {
+        "Data Issuer": "Stack",
+        "Credential Name": "Stack Score",
+        "valueRange": {
+            "min": 25,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Taikai",
+        "Credential Name": "Hackathon Participant (after Nov 2024)",
+        "valueRange": {
+            "min": 20,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "Taikai",
+        "Credential Name": "Hackathon Participant (until Nov 2024)",
+        "valueRange": {
+            "min": 11,
+            "max": 16
+        }
+    },
+    {
+        "Data Issuer": "Talent Protocol",
+        "Credential Name": "Builder+ Member",
+        "valueRange": {
+            "min": 23,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "Talent Protocol",
+        "Credential Name": "Human Checkmark",
+        "valueRange": {
+            "min": 14,
+            "max": 22
+        }
+    },
+    {
+        "Data Issuer": "Talent Protocol",
+        "Credential Name": "Talent Account Age",
+        "valueRange": {
+            "min": 13,
+            "max": 23
+        }
+    },
+    {
+        "Data Issuer": "Talent Protocol",
+        "Credential Name": "$TALENT Vault",
+        "valueRange": {
+            "min": 22,
+            "max": 30
+        }
+    },
+    {
+        "Data Issuer": "World",
+        "Credential Name": "Proof of personhood",
+        "valueRange": {
+            "min": 17,
+            "max": 24
+        }
+    },
+    {
+        "Data Issuer": "X/Twitter",
+        "Credential Name": "X Account",
+        "valueRange": {
+            "min": 18,
+            "max": 28
+        }
+    },
+    {
+        "Data Issuer": "X/Twitter",
+        "Credential Name": "X Account Age",
+        "valueRange": {
+            "min": 13,
+            "max": 21
+        }
+    }
+]

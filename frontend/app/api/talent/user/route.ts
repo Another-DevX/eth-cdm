@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, userAgent } from 'next/server';
 import { UserResponse } from '../interfaces';
 import { talentProtocol } from '../../services';
 
@@ -7,30 +7,40 @@ export async function GET(request: NextRequest) {
     // Get the wallet address from the query parameters
     const searchParams = request.nextUrl.searchParams;
     const walletAddress = searchParams.get('address');
-    
+
     if (!walletAddress) {
       return NextResponse.json(
-        { 
-          message: 'Wallet address is required' 
-        }, 
+        {
+          message: 'Wallet address is required'
+        },
         { status: 400 }
       );
     }
-    
+
     // Get user data from the Talent Protocol service
-    const userData = await talentProtocol.getUserByAddress(walletAddress);
-    
+    // const userData = await talentProtocol.getUserByAddress(walletAddress);
+
+    // ⚠⚠⚠⚠  Mocked due to API issues ⚠⚠⚠⚠ 
+
+    const userData = {
+      userId: '12345',
+      userName: 'Another',
+      image: 'https://i.imgur.com/9wvljRF.jpg'
+    }
     const response: UserResponse = {
       user: userData
     };
+
+    console.log(response);
 
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching user data:', error);
     return NextResponse.json(
-      { 
-        message: 'Failed to fetch user data' 
-      }, 
+      {
+        message: 'Failed to fetch user data',
+        error: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 import { headers } from 'next/headers' // added
 import ContextProvider from '@/context'
 import { Navbar } from '@/components/Navbar'
+import { BadgeProvider } from '@/lib/badgeContext'
 
 export const metadata: Metadata = {
   title: 'Platonautas',
@@ -26,8 +27,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ContextProvider cookies={cookies}>
-          {children}
-          <Toaster />
+          <BadgeProvider>
+            {children}
+            <Toaster />
+          </BadgeProvider>
         </ContextProvider>
       </body>
     </html>

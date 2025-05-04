@@ -6,21 +6,35 @@ import { useApp } from "@/lib/context";
 import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Wallet2, ShieldCheck } from "lucide-react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 export function Register() {
-  const { isVerified, setIsVerified } = useApp();
-  const { open, close  } = useAppKit();
-  const { isConnected } = useAppKitAccount();
-  const handleVerify = () => {
-    setIsVerified(true);
+  const { isVerified, setIsVerified, checkVerificationStatus } = useApp();
+  const { open, close } = useAppKit();
+  const { isConnected, address } = useAppKitAccount();
+
+  // Check verification status when component mounts or wallet connection changes
+  useEffect(() => {
+    if (isConnected && address) {
+      checkVerificationStatus(address);
+    } else if (!isConnected) {
+      // Reset verification status when wallet disconnects
+      setIsVerified(false);
+    }
+  }, [isConnected, address, checkVerificationStatus, setIsVerified]);
+
+  const handleVerify = async () => {
+    if (isConnected && address) {
+      await checkVerificationStatus(address);
+    }
   };
 
   const handleConnectWallet = () => {
     open();
   };
 
-  console.debug({isConnected});
+  console.debug({ isConnected, isVerified });
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-black">
@@ -66,11 +80,10 @@ export function Register() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                      isConnected 
-                        ? "bg-green-500 text-white" 
-                        : "bg-purple-500/20 text-purple-500 border border-purple-500"
-                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${isConnected
+                      ? "bg-green-500 text-white"
+                      : "bg-purple-500/20 text-purple-500 border border-purple-500"
+                      }`}>
                       {isConnected ? (
                         <CheckCircle2 className="w-5 h-5" />
                       ) : (
@@ -81,11 +94,10 @@ export function Register() {
                   </div>
                   <Button
                     onClick={handleConnectWallet}
-                    className={`w-full transition-all duration-300 ${
-                      isConnected 
-                        ? "bg-green-500 hover:bg-green-600" 
-                        : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
-                    }`}
+                    className={`w-full transition-all duration-300 ${isConnected
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
+                      }`}
                   >
                     {isConnected ? "Wallet Conectada" : "Conectar Wallet"}
                   </Button>
@@ -97,11 +109,10 @@ export function Register() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                      isVerified 
-                        ? "bg-green-500 text-white" 
-                        : "bg-purple-500/20 text-purple-500 border border-purple-500"
-                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${isVerified
+                      ? "bg-green-500 text-white"
+                      : "bg-purple-500/20 text-purple-500 border border-purple-500"
+                      }`}>
                       {isVerified ? (
                         <CheckCircle2 className="w-5 h-5" />
                       ) : (
@@ -111,13 +122,12 @@ export function Register() {
                     <span className="font-medium text-white">Verificar en Talent Protocol</span>
                   </div>
                   <Button
-                    onClick={handleVerify}
+                    onClick={() => !isVerified && window.open('https://talentprotocol.com', '_blank')}
                     disabled={!isConnected || isVerified}
-                    className={`w-full transition-all duration-300 ${
-                      isVerified 
-                        ? "bg-green-500 hover:bg-green-600" 
-                        : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
-                    }`}
+                    className={`w-full transition-all duration-300 ${isVerified
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-purple-500 hover:bg-purple-600 border border-purple-400"
+                      }`}
                   >
                     {isVerified ? "Verificado" : "Verificar en Talent Protocol"}
                   </Button>
