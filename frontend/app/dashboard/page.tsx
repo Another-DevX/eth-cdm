@@ -8,11 +8,13 @@ import { Liquidity } from "@/components/Liquidity";
 import { Swap } from "@/components/Swap";
 import { useApp } from "@/lib/context";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 function MainContent() {
-  const { isWalletConnected, isVerified } = useApp();
+  const { isVerified } = useApp();
+  const { isConnected } = useAppKitAccount();
 
-  if (!isWalletConnected || !isVerified) {
+  if (!isConnected || !isVerified) {
     return <Register />;
   }
 
