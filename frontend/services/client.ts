@@ -1,5 +1,6 @@
 import { createPublicClient, createWalletClient, http } from 'viem';
 import { soneium_scs } from '@/config';
+import { soneium } from 'viem/chains';
 
 // Create and export public client
 export const publicClient = createPublicClient({

@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/lib/theme';
 import { EvervaultCard, Icon } from './ui/evervault-card';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
 import { getPlatoCoinBalance } from '@/services/platoCoin';
 import { useBadges } from '@/lib/badgeContext';
@@ -50,6 +50,8 @@ export function Dashboard() {
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [showPlatoCoinsEffect, setShowPlatoCoinsEffect] = useState(false);
   const [claimedBadges, setClaimedBadges] = useState<string[]>([]);
+
+  const queryClient = useQueryClient();
 
   const { address } = useAccount();
 
@@ -155,6 +157,10 @@ export function Dashboard() {
 
       // Add badge to claimed badges
       setClaimedBadges(prev => [...prev, badge.name]);
+      
+      // Refetch badges and points
+      queryClient.invalidateQueries({ queryKey: ['badges'] });
+      fetchBadges(address as string);
     } catch (error) {
       console.error('Error claiming badge:', error);
       toast.error('Failed to claim badge. Please try again.');
@@ -166,10 +172,16 @@ export function Dashboard() {
   };
 
   const handlePlatoCoinsClaim = async () => {
-    await rewardsService.claim()
-    setShowPlatoCoinsEffect(true);
-    resetPlatoCoinBalance()
-
+    try {
+      await rewardsService.claim(address as `0x${string}`);
+      setShowPlatoCoinsEffect(true);
+      resetPlatoCoinBalance();
+      // Refetch badges and points after claiming
+      fetchBadges(address as string);
+    } catch (error) {
+      console.error('Error claiming PlatoCoins:', error);
+      toast.error('Failed to claim PlatoCoins. Please try again.');
+    }
   };
 
   const handleClosePlatoCoinsEffect = () => {

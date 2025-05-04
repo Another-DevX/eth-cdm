@@ -99,10 +99,10 @@ const rewardsService = {
     }
   },
 
-  claim: async (): Promise<{ amount: number }> => {
+  claim: async (address: Address): Promise<{ amount: number }> => {
     try {
       const response = await axios.post<{ amount: number }>(`api/claim`, {
-        "walletAddress": "0x1234567890abcdef1234567890abcdef12345678"
+        "walletAddress": address
       });
       return response.data;
     } catch (error) {

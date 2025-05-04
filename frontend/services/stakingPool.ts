@@ -1,4 +1,4 @@
-import { WalletClient, Address } from 'viem';
+import { WalletClient, Address, Account } from 'viem';
 import { soneium_scs } from '@/config';
 import { STAKING_POOL_ADDRESS, STAKING_POOL_ABI } from '@/constants';
 import { publicClient } from '@/services/client';
@@ -48,7 +48,7 @@ export async function unstake(
 export async function givePlatoCoinsToBenefactor(
   coins: bigint,
   benefactor: `0x${string}`,
-  account: `0x${string}`,
+  account: Account,
   walletClient: WalletClient
 ) {
   try {
