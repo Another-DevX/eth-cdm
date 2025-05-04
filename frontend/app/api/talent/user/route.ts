@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, userAgent } from 'next/server';
 import { UserResponse } from '../interfaces';
 import { talentProtocol } from '../../services';
 
@@ -18,8 +18,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user data from the Talent Protocol service
-    const userData = await talentProtocol.getUserByAddress(walletAddress);
-
+    // const userData = await talentProtocol.getUserByAddress(walletAddress);
+    const userData = {
+      userId: '12345',
+      userName: 'Another',
+      image: 'https://i.imgur.com/9wvljRF.jpg'
+    }
     const response: UserResponse = {
       user: userData
     };
