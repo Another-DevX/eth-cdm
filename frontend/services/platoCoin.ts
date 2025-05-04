@@ -1,6 +1,6 @@
-import { createPublicClient, erc20Abi, http } from 'viem'
+import { createPublicClient, erc20Abi, http, WalletClient } from 'viem'
 import { soneium_scs } from '@/config'
-import { PLATOCOIN_ADDRESS } from '@/constants'
+import { PLATOCOIN_ADDRESS, STAKING_POOL_ADDRESS } from '@/constants'
 
 const client = createPublicClient({
   chain: soneium_scs,
@@ -20,5 +20,26 @@ export async function getPlatoCoinBalance(address: `0x${string}`) {
   } catch (error) {
     console.error('Error while getting plato coin balance', error)
     throw error
+  }
+}
+
+export async function approvePlatoCoin(
+  amount: bigint,
+  account: `0x${string}`,
+  walletClient: WalletClient
+) {
+  try {
+    const hash = await walletClient.writeContract({
+      chain: soneium_scs,
+      address: PLATOCOIN_ADDRESS,
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [STAKING_POOL_ADDRESS, amount],
+      account,
+    });
+    return hash;
+  } catch (error) {
+    console.error('Error approving PlatoCoins:', error);
+    throw error;
   }
 } 
