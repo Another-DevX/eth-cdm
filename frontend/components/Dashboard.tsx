@@ -58,14 +58,19 @@ export function Dashboard() {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [progress, setProgress] = useState<number>(0);
   const [canClaim, setCanClaim] = useState(false);
+  const [hoveredBadge, setHoveredBadge] = useState<string | null>(null);
+  const [temporaryHover, setTemporaryHover] = useState(false);
   const { address } = useAccount();
 
-  const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } = useQuery({
-    queryKey: ['platoCoinBalance', address],
-    queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
-  });
+  const { data: platoCoinBalance, isLoading: isPlatoCoinBalanceLoading } =
+    useQuery({
+      queryKey: ['platoCoinBalance', address],
+      queryFn: () => getPlatoCoinBalance(address as `0x${string}`),
+    });
 
   useEffect(() => {
+    let hoverTimeout: NodeJS.Timeout;
+    let hoverTimeoutNullifier = false;
     const timer = setInterval(() => {
       const now = new Date();
       const totalDuration =
@@ -75,6 +80,18 @@ export function Dashboard() {
 
       const progressPercentage = Math.min(100, (elapsed / totalDuration) * 100);
       setProgress(progressPercentage);
+
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+
+      if (!hoverTimeoutNullifier) {
+        hoverTimeoutNullifier = true;
+        setTemporaryHover(true);
+        hoverTimeout = setTimeout(() => {
+          setTemporaryHover(false);
+        }, 200);
+      }
 
       if (remaining <= 0) {
         setTimeLeft('Season ended');
@@ -92,7 +109,12 @@ export function Dashboard() {
       setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+    };
   }, []);
 
   const totalPoints = mockBadges.reduce((sum, badge) => sum + badge.points, 0);
@@ -138,11 +160,20 @@ export function Dashboard() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.2 }}
                       className='relative flex flex-col items-center w-80 p-6 space-y-6 group'
+                      onClick={() =>
+                        setHoveredBadge(
+                          hoveredBadge === badge.name ? null : badge.name
+                        )
+                      }
                     >
                       {/* Borde gradiente exterior */}
                       <div className='rounded-3xl p-1 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-700 shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full flex-1'>
                         <div className='rounded-2xl bg-black w-full h-full flex items-center justify-center'>
-                          <EvervaultCard>
+                          <EvervaultCard
+                            isHovered={
+                              hoveredBadge === badge.name || temporaryHover
+                            }
+                          >
                             <div className='flex flex-col items-center justify-center w-full'>
                               <div className='mb-2'>{badge.icon}</div>
                               <span className='text-lg font-bold text-black dark:text-white text-center'>
@@ -243,11 +274,11 @@ export function Dashboard() {
                     <div className='flex items-center space-x-3'>
                       <Coins className='w-6 h-6 text-purple-500' />
                       <span className='font-medium text-foreground'>
-                        Total PlatoCoins
+                        Total claimable PlatoCoins
                       </span>
                     </div>
                     {isPlatoCoinBalanceLoading ? (
-                      <Skeleton className="h-8 w-24 bg-purple-500/20" />
+                      <Skeleton className='h-8 w-24 bg-purple-500/20' />
                     ) : (
                       <span className='text-2xl font-bold text-purple-500'>
                         {formatEther(platoCoinBalance || BigInt(0))}
@@ -256,25 +287,13 @@ export function Dashboard() {
                   </div>
                   <Button
                     onClick={handleClaim}
-                    disabled={!canClaim}
-                    className={`w-full transition-all duration-300 ${
-                      canClaim
-                        ? 'bg-purple-500/90 hover:bg-purple-500 border border-purple-400/50 hover:scale-[1.02]'
-                        : 'bg-gray-400/50 cursor-not-allowed'
-                    }`}
+                    className={`w-full transition-all duration-300 ${'bg-purple-500/90 hover:bg-purple-500 border border-purple-400/50 hover:scale-[1.02]'}`}
                   >
                     <div className='flex items-center space-x-2'>
-                      {canClaim ? (
-                        <>
-                          <CheckCircle2 className='w-5 h-5' />
-                          <span>Claim Your PlatoCoins</span>
-                        </>
-                      ) : (
-                        <>
-                          <Clock className='w-5 h-5' />
-                          <span>Waiting for season end</span>
-                        </>
-                      )}
+                      <>
+                        <CheckCircle2 className='w-5 h-5' />
+                        <span>Claim Your PlatoCoins</span>
+                      </>
                     </div>
                   </Button>
                 </div>
