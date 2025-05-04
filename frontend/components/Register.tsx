@@ -6,6 +6,7 @@ import { useApp } from "@/lib/context";
 import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Wallet2, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 
 export function Register() {
   const { isVerified, setIsVerified } = useApp();
